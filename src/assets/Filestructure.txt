@@ -1,0 +1,36 @@
+public/
+│   └── mock/
+│       └── articles.json          // Mock data for articles
+src/
+├── components/
+│   ├── NavBar.tsx
+│   ├── ArticleCard.tsx
+│   ├── ArticleFormDialog.tsx
+│   ├── Filters.tsx
+│   ├── SearchResults.tsx
+│   ├── SearchBar.tsx
+│   └── ProtectedRoute.tsx
+│── api/
+│   |__ articles.ts
+|   |--axiosInstance.ts
+|
+├── context/
+│   ├── AuthContext.tsx
+│   └── ArticlesContext.tsx
+│
+├── pages/
+│   ├── Home.tsx
+│   ├── Article.tsx
+│   ├── Login.tsx
+│   ├── SearchPage.tsx
+│   ├── AdminPanel.tsx
+│   ├── UnauthorizedPage.tsx
+│   └── NotFoundPage.tsx
+│
+├── routes/
+│   └── AppRoutes.tsx
+│
+├── App.tsx
+├── main.tsx
+├── App.css
+└── index.css

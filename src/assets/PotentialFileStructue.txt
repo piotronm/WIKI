@@ -1,0 +1,37 @@
+src/
+├── api/
+│   ├── articles.ts
+│   └── axiosInstance.ts
+│
+│
+├── components/
+│   ├── NavBar.tsx
+│   ├── ArticleCard.tsx
+│   ├── ArticleFormDialog.tsx
+│   ├── Filters.tsx
+│   ├── SearchResults.tsx
+│   ├── SearchBar.tsx
+│   └── ProtectedRoute.tsx
+│
+├── context/
+│   ├── AuthContext.tsx
+│   └── ArticlesContext.tsx
+│
+│
+├── pages/
+│   ├── Home.tsx
+│   ├── Article.tsx
+│   ├── Login.tsx
+│   ├── SearchPage.tsx
+│   ├── AdminPanel.tsx
+│   ├── UnauthorizedPage.tsx
+│   └── NotFoundPage.tsx
+│
+├── routes/
+│   └── AppRoutes.tsx
+│
+│
+├── App.tsx
+├── main.tsx
+├── App.css
+└── index.css
