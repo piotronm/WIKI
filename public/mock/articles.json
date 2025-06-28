@@ -1,0 +1,44 @@
+[
+  {
+    "id": "1",
+    "platform": "Windows",
+    "category": "Startup",
+    "title": "Managing Startup Programs",
+    "description": "Step-by-step guide on managing which apps launch at startup.",
+    "imageUrl1": "",
+    "imageUrl2": "",
+    "dateCreated": "2021-06-25T00:00:00Z",
+    "segment": "IT Support",
+    "solution": "Use Task Manager > Startup tab to disable unnecessary programs.",
+    "userId": "user_001",
+    "tags": ["drive"]
+  },
+  {
+    "id": "2",
+    "platform": "Chrome",
+    "category": "Browser",
+    "title": "Installing Browser Extensions",
+    "description": "Instructions for safely installing browser extensions.",
+    "imageUrl1": "",
+    "imageUrl2": "",
+    "dateCreated": "2023-06-12T00:00:00Z",
+    "segment": "Software Help",
+    "solution": "Visit Chrome Web Store, search for the extension, and click 'Add to Chrome'.",
+    "userId": "user_002",
+    "tags": ["filters", "windows", "browser"]
+  },
+  {
+    "id": "3",
+    "platform": "Mac",
+    "category": "Performance",
+    "title": "Optimizing Device Performance",
+    "description": "Guide on improving system performance.",
+    "imageUrl1": "",
+    "imageUrl2": "",
+    "dateCreated": "2023-04-15T00:00:00Z",
+    "segment": "Device Maintenance",
+    "solution": "Remove unused apps, manage storage, and restart regularly.",
+    "userId": "user_003",
+    "tags": ["files"]
+  }
+]
