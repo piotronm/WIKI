@@ -13,9 +13,6 @@ import {
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { useTags } from "../context/TagsContext";
 
 type FiltersProps = {
@@ -23,10 +20,6 @@ type FiltersProps = {
   setActiveTags: (tags: string[]) => void;
   sortBy: "newest" | "oldest";
   setSortBy: (val: "newest" | "oldest") => void;
-  startDate: Date | null;
-  endDate: Date | null;
-  setStartDate: (date: Date | null) => void;
-  setEndDate: (date: Date | null) => void;
   onResetFilters: () => void;
 };
 
@@ -35,10 +28,6 @@ const Filters = ({
   setActiveTags,
   sortBy,
   setSortBy,
-  startDate,
-  endDate,
-  setStartDate,
-  setEndDate,
   onResetFilters,
 }: FiltersProps) => {
   const [filtersVisible, setFiltersVisible] = useState(false);
@@ -122,32 +111,21 @@ const Filters = ({
           <Stack spacing={2}>
             {/* Tags */}
             <Box display="flex" flexWrap="wrap" gap={1}>
-              {tags.map((tag) => (
-                <Chip
-                  key={tag.id}
-                  label={tag.name}
-                  color={activeTags.includes(tag.name) ? "primary" : "default"}
-                  onClick={() => handleTagClick(tag.name)}
-                  clickable
-                />
-              ))}
+              {tags.map((tag) => {
+                if (!tag.id) console.warn("Missing tag ID", tag);
+                return (
+                  <Chip
+                    key={tag.id}
+                    label={tag.name}
+                    color={
+                      activeTags.includes(tag.name) ? "primary" : "default"
+                    }
+                    onClick={() => handleTagClick(tag.name)}
+                    clickable
+                  />
+                );
+              })}
             </Box>
-
-            {/* Date Filters */}
-            <LocalizationProvider dateAdapter={AdapterDateFns}>
-              <DatePicker
-                label="Start Date"
-                value={startDate}
-                onChange={setStartDate}
-                slotProps={{ textField: { fullWidth: true } }}
-              />
-              <DatePicker
-                label="End Date"
-                value={endDate}
-                onChange={setEndDate}
-                slotProps={{ textField: { fullWidth: true } }}
-              />
-            </LocalizationProvider>
 
             {/* Reset Button */}
             <Box display="flex" justifyContent="flex-end">
