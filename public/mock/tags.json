@@ -1,0 +1,9 @@
+[
+  { "id": "tag1", "name": "drive" },
+  { "id": "tag2", "name": "filters" },
+  { "id": "tag3", "name": "windows" },
+  { "id": "tag4", "name": "browser" },
+  { "id": "tag5", "name": "files" },
+  { "id": "tag6", "name": "startup" },
+  { "id": "tag7", "name": "performance" }
+]
