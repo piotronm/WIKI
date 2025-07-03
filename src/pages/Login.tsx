@@ -1,95 +1,101 @@
 // src/pages/Login.tsx
 import { useState } from "react";
-import { useAuth } from "../context/AuthContext";
-import { useNavigate } from "react-router-dom";
 import {
   Box,
   TextField,
   Button,
   Typography,
-  Paper,
-  CircularProgress,
   Alert,
-  Stack,
+  CircularProgress,
+  Paper,
 } from "@mui/material";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
+import api from "../api/axiosInstance";
 
 export default function Login() {
   const { login } = useAuth();
   const navigate = useNavigate();
-
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [errorMsg, setErrorMsg] = useState("");
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setErrorMsg("");
+    setErrorMsg(null);
     setLoading(true);
 
     try {
-      const res = await fetch(
-        `/api/User?username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`,
-        { method: "POST" }
+      const response = await api.post(
+        `/User?username=${encodeURIComponent(
+          username
+        )}&password=${encodeURIComponent(password)}`
       );
 
-      const data = await res.json();
+      const data = response.data;
 
-      if (!res.ok || !data) {
-        throw new Error("Invalid response from server.");
-      }
-
-      if (data.isAdmin !== undefined) {
-        login("mock-token", data.isAdmin ? "admin" : "viewer");
+      if (data?.isAdmin !== undefined) {
+        login("fake-token", data.isAdmin ? "admin" : "viewer");
         navigate("/admin");
       } else {
-        setErrorMsg("Login successful but user role is unknown.");
+        setErrorMsg("Login failed: unknown user role.");
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error("Login failed:", err);
-      setErrorMsg("Invalid credentials or server error.");
+      setErrorMsg(
+        err.response?.status === 401
+          ? "Invalid username or password."
+          : "Login failed. Please try again later."
+      );
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <Box display="flex" justifyContent="center" alignItems="center" minHeight="80vh">
-      <Paper elevation={3} sx={{ p: 4, maxWidth: 400, width: "100%" }}>
-        <Typography variant="h5" gutterBottom>
+    <Box maxWidth="sm" mx="auto" mt={8}>
+      <Paper elevation={3} sx={{ p: 4 }}>
+        <Typography variant="h5" mb={3} fontWeight="bold" textAlign="center">
           Admin Login
         </Typography>
 
         <form onSubmit={handleSubmit}>
-          <Stack spacing={2}>
-            <TextField
-              label="Username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              fullWidth
-              required
-            />
-            <TextField
-              label="Password"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              fullWidth
-              required
-            />
+          <TextField
+            fullWidth
+            label="Username"
+            variant="outlined"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            margin="normal"
+            required
+          />
+          <TextField
+            fullWidth
+            label="Password"
+            type="password"
+            variant="outlined"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            margin="normal"
+            required
+          />
 
-            {errorMsg && <Alert severity="error">{errorMsg}</Alert>}
+          {errorMsg && (
+            <Alert severity="error" sx={{ mt: 2 }}>
+              {errorMsg}
+            </Alert>
+          )}
 
-            <Button
-              type="submit"
-              variant="contained"
-              color="primary"
-              disabled={loading}
-              fullWidth
-            >
-              {loading ? <CircularProgress size={24} color="inherit" /> : "Login"}
-            </Button>
-          </Stack>
+          <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            color="primary"
+            sx={{ mt: 3 }}
+            disabled={loading}>
+            {loading ? <CircularProgress size={24} /> : "Login"}
+          </Button>
         </form>
       </Paper>
     </Box>
