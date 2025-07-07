@@ -1,7 +1,7 @@
 // src/api/articles.ts
 import api from "./axiosInstance";
 import type { Article } from "../types/Article";
-import { fetchTagsForArticle, setTagsForArticle } from "./tags";
+import { fetchTagsForArticle } from "./tags";
 import { normalizeArticle } from "../utils/normalize";
 
 // --- Fetch all articles ---
@@ -51,19 +51,13 @@ export async function createArticle(newArticle: Partial<Article>): Promise<Artic
     Segment: newArticle.segment ?? "",
     Solution: newArticle.solution ?? "",
     UserId: newArticle.userId ?? "",
-    Tags: [], // Skip sending tag IDs in this POST
+    Tags: (newArticle.tags ?? []).map((id) => ({ Id: id })),
   };
 
-  // Step 1: Create article
   const response = await api.post("/Knowledge", payload);
   const saved = response.data;
 
-  // Step 2: Send tags in a separate request to join table
-  if (newArticle.tags && newArticle.tags.length > 0) {
-    await setTagsForArticle(saved.Id, newArticle.tags);
-  }
-
-  return normalizeArticle({ ...saved, Tags: newArticle.tags || [] });
+  return normalizeArticle({ ...saved, Tags: newArticle.tags ?? [] });
 }
 
 
