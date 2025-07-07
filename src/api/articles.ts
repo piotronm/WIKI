@@ -50,19 +50,16 @@ export async function createArticle(newArticle: Partial<Article>): Promise<Artic
     DateCreated: newArticle.dateCreated ?? new Date().toISOString(),
     Segment: newArticle.segment ?? "",
     Solution: newArticle.solution ?? "",
-    UserId: newArticle.userId ?? "", 
+    UserId: newArticle.userId ?? "",
+    Tags: (newArticle.tags ?? []).map((id) => ({ Id: id })),
   };
 
   const response = await api.post("/Knowledge", payload);
-
   const saved = response.data;
-
-  if (newArticle.tags?.length && saved.Id) {
-    await setTagsForArticle(saved.Id, newArticle.tags);
-  }
 
   return normalizeArticle({ ...saved, Tags: newArticle.tags || [] });
 }
+
 
 
 // --- Update existing article ---
@@ -79,17 +76,15 @@ export async function updateArticle(id: string, updatedArticle: Partial<Article>
     Segment: updatedArticle.segment ?? "",
     Solution: updatedArticle.solution ?? "",
     UserId: updatedArticle.userId ?? "",
+    Tags: (updatedArticle.tags ?? []).map((id) => ({ Id: id })),
   };
 
   const response = await api.put(`/Knowledge/${id}`, payload);
   const updated = response.data;
 
-  if (updatedArticle.tags?.length) {
-    await setTagsForArticle(id, updatedArticle.tags);
-  }
-
   return normalizeArticle({ ...updated, Tags: updatedArticle.tags || [] });
 }
+
 
 
 // --- Associate tags (IDs) with an article ---
