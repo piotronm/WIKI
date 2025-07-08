@@ -10,6 +10,7 @@ import {
   useMediaQuery,
   useTheme,
   Collapse,
+  Fade,
   IconButton,
 } from "@mui/material";
 import VisibilityIcon from "@mui/icons-material/Visibility";
@@ -17,7 +18,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ImageIcon from "@mui/icons-material/Image";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import type { Article } from "../types/Article";
 
@@ -102,38 +103,50 @@ const AdminArticleListItem: React.FC<AdminArticleListItemProps> = ({
       }}
     >
       <Box flex={1} minWidth={250}>
-        <Typography
-          variant="subtitle1"
-          fontWeight={600}
-          sx={{ wordBreak: "break-word" }}
-        >
-          {article.title}
-        </Typography>
+        <Box display="flex" alignItems="center" justifyContent="space-between">
+          <Typography
+            variant="subtitle1"
+            fontWeight={600}
+            sx={{ wordBreak: "break-word" }}
+          >
+            {article.title}
+          </Typography>
+          <Tooltip
+            title={isExpanded ? "Collapse description" : "Expand description"}
+          >
+            <IconButton
+              size="small"
+              onClick={() => toggleExpanded(article.id)}
+              sx={{
+                ml: 1,
+                border: `1px solid ${theme.palette.divider}`,
+                borderRadius: "8px",
+                backgroundColor: isExpanded
+                  ? theme.palette.action.selected
+                  : "transparent",
+                transition: "background-color 0.2s",
+              }}
+              aria-label="Toggle description"
+            >
+              {isExpanded ? <ExpandLessIcon /> : <MoreHorizIcon />}
+            </IconButton>
+          </Tooltip>
+        </Box>
 
-        <Box display="flex" alignItems="center">
-          <Collapse in={isExpanded} collapsedSize={48}>
+        <Fade in={isExpanded} timeout={300}>
+          <Collapse in={isExpanded}>
             <Typography
               variant="body2"
               color="text.secondary"
-              sx={{
-                whiteSpace: isExpanded ? "normal" : "nowrap",
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-              }}
+              mt={1}
+              sx={{ whiteSpace: "pre-wrap" }}
             >
               {article.description}
             </Typography>
           </Collapse>
-          <IconButton
-            size="small"
-            onClick={() => toggleExpanded(article.id)}
-            aria-label={isExpanded ? "Collapse description" : "Expand description"}
-          >
-            {isExpanded ? <ExpandLessIcon /> : <ExpandMoreIcon />}
-          </IconButton>
-        </Box>
+        </Fade>
 
-        <Stack direction="row" spacing={1} flexWrap="wrap" mt={0.5}>
+        <Stack direction="row" spacing={1} flexWrap="wrap" mt={1}>
           {tagNames.length > 0 ? (
             tagNames.map((name) => (
               <Chip key={name} label={name} size="small" />
