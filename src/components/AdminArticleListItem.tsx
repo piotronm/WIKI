@@ -88,17 +88,25 @@ const AdminArticleListItem: React.FC<AdminArticleListItemProps> = ({
 
   return (
     <ListItem
+      divider
       sx={{
         display: "flex",
         justifyContent: "space-between",
         alignItems: "flex-start",
         flexWrap: "wrap",
         gap: 2,
+        "&:hover": {
+          backgroundColor: theme.palette.action.hover,
+        },
+        transition: "background-color 0.2s ease-in-out",
       }}
-      divider
     >
-      <Box flex={1} minWidth={200}>
-        <Typography variant="subtitle1" fontWeight={600}>
+      <Box flex={1} minWidth={250}>
+        <Typography
+          variant="subtitle1"
+          fontWeight={600}
+          sx={{ wordBreak: "break-word" }}
+        >
           {article.title}
         </Typography>
 
@@ -116,7 +124,11 @@ const AdminArticleListItem: React.FC<AdminArticleListItemProps> = ({
               {article.description}
             </Typography>
           </Collapse>
-          <IconButton size="small" onClick={() => toggleExpanded(article.id)}>
+          <IconButton
+            size="small"
+            onClick={() => toggleExpanded(article.id)}
+            aria-label={isExpanded ? "Collapse description" : "Expand description"}
+          >
             {isExpanded ? <ExpandLessIcon /> : <ExpandMoreIcon />}
           </IconButton>
         </Box>
@@ -138,7 +150,7 @@ const AdminArticleListItem: React.FC<AdminArticleListItemProps> = ({
         </Stack>
       </Box>
 
-      <Box display="flex" gap={1} mt={0.5}>
+      <Box display="flex" flexDirection="column" gap={1}>
         <Button
           component={Link}
           to={`/article/${article.id}`}
