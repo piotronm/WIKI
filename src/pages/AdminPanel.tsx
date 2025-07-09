@@ -35,22 +35,30 @@ export default function AdminPanel() {
   const [error, setError] = useState<string | null>(null);
   const [showSnackbar, setShowSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
-  const [snackbarSeverity, setSnackbarSeverity] = useState<"success" | "error">("success");
+  const [snackbarSeverity, setSnackbarSeverity] = useState<"success" | "error">(
+    "success"
+  );
   const [activeTags, setActiveTags] = useState<string[]>([]);
   const [sortBy, setSortBy] = useState<"newest" | "oldest">("newest");
-  const [expandedArticleId, setExpandedArticleId] = useState<string | null>(null);
+  const [expandedArticleId, setExpandedArticleId] = useState<string | null>(
+    null
+  );
   const [page, setPage] = useState(1);
   const [submitting, setSubmitting] = useState(false);
   const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [articleToDelete, setArticleToDelete] = useState<Article | null>(null);
 
-  const fuse = useMemo(() => new Fuse(articles, {
-    keys: ["title", "description"],
-    threshold: 0.3,
-    minMatchCharLength: 2,
-    ignoreLocation: true,
-  }), [articles]);
+  const fuse = useMemo(
+    () =>
+      new Fuse(articles, {
+        keys: ["title", "description"],
+        threshold: 0.3,
+        minMatchCharLength: 2,
+        ignoreLocation: true,
+      }),
+    [articles]
+  );
 
   const debouncedQuery = useDebouncedValue(query, 300);
 
@@ -65,7 +73,9 @@ export default function AdminPanel() {
   };
 
   const handleExport = () => {
-    const blob = new Blob([JSON.stringify(articles, null, 2)], { type: "application/json" });
+    const blob = new Blob([JSON.stringify(articles, null, 2)], {
+      type: "application/json",
+    });
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;
@@ -80,7 +90,13 @@ export default function AdminPanel() {
       return;
     }
 
-    if (articles.some(a => a.title.trim().toLowerCase() === form.title!.trim().toLowerCase() && a.id !== form.id)) {
+    if (
+      articles.some(
+        (a) =>
+          a.title.trim().toLowerCase() === form.title!.trim().toLowerCase() &&
+          a.id !== form.id
+      )
+    ) {
       alert("An article with this title already exists.");
       return;
     }
@@ -92,7 +108,9 @@ export default function AdminPanel() {
       if (form.id && articles.find((a) => a.id === form.id)) {
         const updated = await updateArticle(form.id, form);
         updated.tags = form.tags ?? [];
-        setArticles((prev) => prev.map((a) => (a.id === form.id ? updated : a)));
+        setArticles((prev) =>
+          prev.map((a) => (a.id === form.id ? updated : a))
+        );
         setSnackbarMessage("Article updated successfully");
       } else {
         const created = await createArticle(form);
@@ -116,12 +134,17 @@ export default function AdminPanel() {
   };
 
   const filteredArticles = useMemo(() => {
-    const baseArticles = debouncedQuery.trim().length >= 2
-      ? fuseResults.map((r) => r.item)
-      : articles;
+    const baseArticles =
+      debouncedQuery.trim().length >= 2
+        ? fuseResults.map((r) => r.item)
+        : articles;
 
     return baseArticles
-      .filter((article) => activeTags.length === 0 || article.tags.some((tagId) => activeTags.includes(tagId)))
+      .filter(
+        (article) =>
+          activeTags.length === 0 ||
+          article.tags.some((tagId) => activeTags.includes(tagId))
+      )
       .sort((a, b) => {
         const aTime = new Date(a.dateCreated ?? 0).getTime();
         const bTime = new Date(b.dateCreated ?? 0).getTime();
@@ -190,16 +213,21 @@ export default function AdminPanel() {
   };
 
   return (
-    <Box display="flex" height="100%" px={2} py={4}>
+    <Box
+      display="flex"
+      minHeight="100vh"
+      width="100%"
+      px={{ xs: 2, md: 4, lg: 6 }}
+      py={4}>
       {/* Sidebar */}
       <Box
-        width={{ xs: "100%", md: 280 }}
+        width={{ xs: "100%", md: 320, lg: 360 }}
+        maxWidth="360px"
         pr={3}
         display="flex"
         flexDirection="column"
         gap={2}
-        flexShrink={0}
-      >
+        flexShrink={0}>
         <Typography variant="h5" gutterBottom>
           Manage Articles
         </Typography>
@@ -208,8 +236,7 @@ export default function AdminPanel() {
           variant="contained"
           color="primary"
           fullWidth
-          onClick={handleNewArticle}
-        >
+          onClick={handleNewArticle}>
           + Add New Article
         </Button>
 
@@ -217,8 +244,7 @@ export default function AdminPanel() {
           variant="outlined"
           fullWidth
           onClick={handleExport}
-          disabled={!!form}
-        >
+          disabled={!!form}>
           Export Articles
         </Button>
 
@@ -246,7 +272,11 @@ export default function AdminPanel() {
           onSelectSuggestion={(val) => setQuery(val)}
         />
 
-        {error && <Alert severity="error" sx={{ mt: 2 }}>{error}</Alert>}
+        {error && (
+          <Alert severity="error" sx={{ mt: 2 }}>
+            {error}
+          </Alert>
+        )}
         {(loading || submitting) && (
           <Box mt={2} textAlign="center">
             <CircularProgress />
@@ -255,8 +285,11 @@ export default function AdminPanel() {
 
         <Paper
           elevation={2}
-          sx={{ mt: 2, opacity: form ? 0.3 : 1, pointerEvents: form ? "none" : "auto" }}
-        >
+          sx={{
+            mt: 2,
+            opacity: form ? 0.3 : 1,
+            pointerEvents: form ? "none" : "auto",
+          }}>
           <List>
             {paginatedArticles.map((a) => (
               <AdminArticleListItem
@@ -276,7 +309,9 @@ export default function AdminPanel() {
 
         {filteredArticles.length === 0 && (
           <Box mt={2}>
-            <Alert severity="info">No articles match your search or filters.</Alert>
+            <Alert severity="info">
+              No articles match your search or filters.
+            </Alert>
           </Box>
         )}
 
@@ -285,8 +320,7 @@ export default function AdminPanel() {
             <Button
               variant="outlined"
               onClick={() => setPage((prev) => prev + 1)}
-              disabled={!!form}
-            >
+              disabled={!!form}>
               Load More
             </Button>
           </Box>
@@ -305,31 +339,38 @@ export default function AdminPanel() {
           onKeyDown={handleKeyDown}
         />
       )}
-      <Dialog open={deleteDialogOpen} onClose={() => setDeleteDialogOpen(false)}>
+      <Dialog
+        open={deleteDialogOpen}
+        onClose={() => setDeleteDialogOpen(false)}>
         <DialogTitle>Confirm Delete</DialogTitle>
         <DialogContent>
           Are you sure you want to delete "{articleToDelete?.title}"?
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setDeleteDialogOpen(false)}>Cancel</Button>
-          <Button color="error" variant="contained" onClick={confirmDelete}>Delete</Button>
+          <Button color="error" variant="contained" onClick={confirmDelete}>
+            Delete
+          </Button>
         </DialogActions>
       </Dialog>
-      <Dialog open={cancelDialogOpen} onClose={() => setCancelDialogOpen(false)}>
+      <Dialog
+        open={cancelDialogOpen}
+        onClose={() => setCancelDialogOpen(false)}>
         <DialogTitle>Discard Changes?</DialogTitle>
         <DialogContent>
           Are you sure you want to discard the changes you made?
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setCancelDialogOpen(false)}>Keep Editing</Button>
+          <Button onClick={() => setCancelDialogOpen(false)}>
+            Keep Editing
+          </Button>
           <Button
             color="error"
             variant="contained"
             onClick={() => {
               setForm(null);
               setCancelDialogOpen(false);
-            }}
-          >
+            }}>
             Discard
           </Button>
         </DialogActions>
@@ -338,9 +379,11 @@ export default function AdminPanel() {
         open={showSnackbar}
         autoHideDuration={4000}
         onClose={() => setShowSnackbar(false)}
-        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-      >
-        <MuiAlert severity={snackbarSeverity} onClose={() => setShowSnackbar(false)} sx={{ width: "100%" }}>
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}>
+        <MuiAlert
+          severity={snackbarSeverity}
+          onClose={() => setShowSnackbar(false)}
+          sx={{ width: "100%" }}>
           {snackbarMessage}
         </MuiAlert>
       </Snackbar>
