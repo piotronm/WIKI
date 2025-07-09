@@ -21,13 +21,6 @@ import type { Article } from "../types/Article";
 import { fetchTags } from "../api/articles";
 import RichTextEditor from "./LexicalEditor";
 
-const [validationErrors, setValidationErrors] = useState<{
-  [key: string]: boolean;
-}>({});
-const descriptionRef = useRef<HTMLDivElement>(null);
-const solutionRef = useRef<HTMLDivElement>(null);
-const platformRef = useRef<HTMLDivElement>(null);
-
 type Tag = {
   id: string;
   name: string;
@@ -59,6 +52,13 @@ const ArticleFormDialog: React.FC<ArticleFormDialogProps> = ({
   onKeyDown,
 }) => {
   const titleRef = useRef<HTMLInputElement>(null);
+  const descriptionRef = useRef<HTMLDivElement>(null);
+  const solutionRef = useRef<HTMLDivElement>(null);
+  const platformRef = useRef<HTMLDivElement>(null);
+
+  const [validationErrors, setValidationErrors] = useState<{
+    [key: string]: boolean;
+  }>({});
   const [availableTags, setAvailableTags] = useState<Tag[]>([]);
   const [loadingTags, setLoadingTags] = useState(true);
   const [tagLoadError, setTagLoadError] = useState(false);
@@ -229,7 +229,7 @@ const ArticleFormDialog: React.FC<ArticleFormDialogProps> = ({
                     onChange={(e) =>
                       onChange({ ...form, platform: e.target.value })
                     }
-                    error={!form?.platform}>
+                    error={!form.platform?.trim()}>
                     {platformOptions.map((p) => (
                       <MenuItem key={p} value={p}>
                         {p}
