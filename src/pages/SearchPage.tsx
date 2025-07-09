@@ -1,7 +1,14 @@
-// src/pages/SearchPage.tsx
 import { useState, useMemo, useEffect } from "react";
 import { useArticles } from "../context/ArticlesContext";
-import { Box, Typography, CircularProgress, Alert } from "@mui/material";
+import {
+  Box,
+  Typography,
+  CircularProgress,
+  Alert,
+  Divider,
+  Paper,
+  Fade,
+} from "@mui/material";
 import Fuse from "fuse.js";
 import Footer from "../components/Footer";
 import SearchBar from "../components/SearchBar";
@@ -98,56 +105,73 @@ const SearchPage = () => {
   };
 
   return (
-    <Box maxWidth="md" mx="auto" my={4} px={2}>
-      <Typography variant="h4" gutterBottom>
-        Search Knowledge Base
-      </Typography>
+    <Box
+      maxWidth="md"
+      mx="auto"
+      my={4}
+      px={{ xs: 2, md: 4 }}
+      sx={{ paddingTop: "64px" }} // ensures no overlap with sticky NavBar
+    >
+      <Paper elevation={3} sx={{ p: { xs: 2, md: 4 }, mb: 4 }}>
+        <Typography variant="h4" gutterBottom sx={{ fontWeight: "bold" }}>
+          Search Knowledge Base
+        </Typography>
 
-      <SearchBar
-        query={query}
-        setQuery={setQuery}
-        onSearch={handleSearch}
-        loading={loading}
-        suggestions={suggestionTitles}
-        onSelectSuggestion={handleSelectSuggestion}
-      />
-
-      {tagsLoading ? (
-        <Box display="flex" justifyContent="center" my={4}>
-          <CircularProgress />
-        </Box>
-      ) : (
-        <Filters
-          activeTags={activeTags}
-          setActiveTags={setActiveTags}
-          sortBy={sortBy}
-          setSortBy={setSortBy}
-          onResetFilters={handleResetFilters}
+        <SearchBar
+          query={query}
+          setQuery={setQuery}
+          onSearch={handleSearch}
+          loading={loading}
+          suggestions={suggestionTitles}
+          onSelectSuggestion={handleSelectSuggestion}
         />
-      )}
 
-      {loading ? (
-        <Box display="flex" justifyContent="center" mt={4}>
-          <CircularProgress />
+        <Divider sx={{ my: 3 }} />
+
+        {tagsLoading ? (
+          <Box display="flex" justifyContent="center" my={4}>
+            <CircularProgress />
+          </Box>
+        ) : (
+          <Filters
+            activeTags={activeTags}
+            setActiveTags={setActiveTags}
+            sortBy={sortBy}
+            setSortBy={setSortBy}
+            onResetFilters={handleResetFilters}
+          />
+        )}
+      </Paper>
+
+      <Fade in={!loading}>
+        <Box>
+          {loading ? (
+            <Box display="flex" justifyContent="center" mt={4}>
+              <CircularProgress />
+            </Box>
+          ) : searchTimeout ? (
+            <Alert severity="warning" sx={{ mt: 2 }}>
+              Search took too long. Please try again or refine your query.
+            </Alert>
+          ) : filteredArticles.length === 0 ? (
+            <Alert severity="info" sx={{ mt: 2 }}>
+              No articles found.
+            </Alert>
+          ) : (
+            <SearchResultsList
+              articles={filteredArticles}
+              page={page}
+              pageSize={pageSize}
+              setPage={setPage}
+              tags={tags}
+            />
+          )}
         </Box>
-      ) : searchTimeout ? (
-        <Alert severity="warning" sx={{ mt: 2 }}>
-          Search took too long. Please try again or refine your query.
-        </Alert>
-      ) : filteredArticles.length === 0 ? (
-        <Alert severity="info" sx={{ mt: 2 }}>
-          No articles found.
-        </Alert>
-      ) : (
-        <SearchResultsList
-          articles={filteredArticles}
-          page={page}
-          pageSize={pageSize}
-          setPage={setPage}
-          tags={tags}
-        />
-      )}
-      <Footer />
+      </Fade>
+
+      <Box mt={6}>
+        <Footer />
+      </Box>
     </Box>
   );
 };
