@@ -17,17 +17,20 @@ export default function NavBar() {
   const location = useLocation();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const stickyRoutes = ["/", "/search", "/admin"];
+  const isSticky = stickyRoutes.includes(location.pathname);
 
   const isActive = (path: string) => location.pathname === path;
 
   return (
     <AppBar
-      position="static"
+      position={isSticky ? "sticky" : "static"}
       sx={{
-        backgroundColor: "#0D1B2A", // Deep Navy
+        top: 0,
+        zIndex: theme.zIndex.appBar,
+        backgroundColor: "#0D1B2A",
         color: "#E0E1DD",
-      }}
-    >
+      }}>
       <Toolbar>
         <Box display="flex" alignItems="center" sx={{ flexGrow: 1 }}>
           <MenuBookIcon sx={{ mr: 1, color: "#00B4D8" }} />
@@ -41,8 +44,7 @@ export default function NavBar() {
               fontWeight: "bold",
               mr: 4,
               letterSpacing: 0.5,
-            }}
-          >
+            }}>
             CEW Knowledge
           </Typography>
 
@@ -54,8 +56,7 @@ export default function NavBar() {
                 to="/"
                 sx={{
                   borderBottom: isActive("/") ? "2px solid #00B4D8" : "none",
-                }}
-              >
+                }}>
                 Home
               </Button>
               <Button
@@ -66,8 +67,7 @@ export default function NavBar() {
                   borderBottom: isActive("/search")
                     ? "2px solid #00B4D8"
                     : "none",
-                }}
-              >
+                }}>
                 Knowledge Base
               </Button>
               {user?.role === "admin" && (
@@ -79,8 +79,7 @@ export default function NavBar() {
                     borderBottom: isActive("/admin")
                       ? "2px solid #00B4D8"
                       : "none",
-                  }}
-                >
+                  }}>
                   Admin Dashboard
                 </Button>
               )}
@@ -94,8 +93,7 @@ export default function NavBar() {
             onClick={() => {
               logout();
               navigate("/");
-            }}
-          >
+            }}>
             Logout
           </Button>
         ) : (
