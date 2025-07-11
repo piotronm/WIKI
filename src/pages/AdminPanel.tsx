@@ -37,10 +37,14 @@ export default function AdminPanel() {
   const [error, setError] = useState<string | null>(null);
   const [showSnackbar, setShowSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
-  const [snackbarSeverity, setSnackbarSeverity] = useState<"success" | "error">("success");
+  const [snackbarSeverity, setSnackbarSeverity] = useState<"success" | "error">(
+    "success"
+  );
   const [activeTags, setActiveTags] = useState<string[]>([]);
   const [sortBy, setSortBy] = useState<"newest" | "oldest">("newest");
-  const [expandedArticleId, setExpandedArticleId] = useState<string | null>(null);
+  const [expandedArticleId, setExpandedArticleId] = useState<string | null>(
+    null
+  );
   const [page, setPage] = useState(1);
   const [submitting, setSubmitting] = useState(false);
   const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
@@ -164,8 +168,6 @@ export default function AdminPanel() {
   const handleEdit = (article: Article) => {
     setForm(normalizeArticle(article));
   };
-  
-  
 
   const handleDelete = (id: string) => {
     setArticleToDelete(articles.find((a) => a.id === id) || null);
@@ -215,8 +217,7 @@ export default function AdminPanel() {
   return (
     <Stack
       direction={{ xs: "column", md: "row" }}
-      sx={{ minHeight: "100vh", width: "100%", bgcolor: "#f9fafc" }}
-    >
+      sx={{ minHeight: "100vh", width: "100%", bgcolor: "#f9fafc" }}>
       {/* Sticky Sidebar */}
       <Box
         sx={{
@@ -230,32 +231,29 @@ export default function AdminPanel() {
           overflowY: { md: "auto" },
           px: { xs: 2, md: 3 },
           py: 4,
-        }}
-      >
+        }}>
         <Typography variant="h5" gutterBottom>
           Manage Articles
         </Typography>
-  
+
         <Button
           variant="contained"
           color="primary"
           fullWidth
           onClick={handleNewArticle}
-          sx={{ mb: 1 }}
-        >
+          sx={{ mb: 1 }}>
           + Add New Article
         </Button>
-  
+
         <Button
           variant="outlined"
           fullWidth
           onClick={handleExport}
           disabled={!!form}
-          sx={{ mb: 3 }}
-        >
+          sx={{ mb: 3 }}>
           Export Articles
         </Button>
-  
+
         <Filters
           activeTags={activeTags}
           setActiveTags={setActiveTags}
@@ -268,7 +266,7 @@ export default function AdminPanel() {
           }}
         />
       </Box>
-  
+
       {/* Main Content */}
       <Box
         sx={{
@@ -276,8 +274,7 @@ export default function AdminPanel() {
           px: { xs: 2, md: 4 },
           py: 4,
           maxWidth: "100%",
-        }}
-      >
+        }}>
         {/* Sticky Header */}
         <Box
           sx={{
@@ -287,34 +284,34 @@ export default function AdminPanel() {
             backgroundColor: "#f9fafc",
             pb: 2,
             boxShadow: "0 2px 4px rgba(0,0,0,0.05)",
-          }}
-        >
+          }}>
           <SearchBar
-  query={query}
-  setQuery={setQuery}
-  onSearch={() => {}}
-  loading={loading}
-  suggestions={fuseResults.slice(0, 5).map((r) => r.item.title)}
-  onSelectSuggestion={(val) => setQuery(val)}
-/>
-  
+            query={query}
+            setQuery={setQuery}
+            onSearch={() => {}}
+            loading={loading}
+            suggestions={fuseResults.slice(0, 5).map((r) => r.item.title)}
+            onSelectSuggestion={(val) => setQuery(val)}
+          />
+
           <Typography variant="body2" color="text.secondary" mt={1}>
-            Showing {paginatedArticles.length} of {filteredArticles.length} articles
+            Showing {paginatedArticles.length} of {filteredArticles.length}{" "}
+            articles
           </Typography>
-  
+
           {error && (
             <Alert severity="error" sx={{ mt: 2 }}>
               {error}
             </Alert>
           )}
-  
+
           {(loading || submitting) && (
             <Box mt={2} textAlign="center">
               <CircularProgress />
             </Box>
           )}
         </Box>
-  
+
         {/* Articles List */}
         <Paper
           elevation={2}
@@ -322,8 +319,7 @@ export default function AdminPanel() {
             mt: 4,
             opacity: form ? 0.3 : 1,
             pointerEvents: form ? "none" : "auto",
-          }}
-        >
+          }}>
           <List>
             {paginatedArticles.map((a) => (
               <AdminArticleListItem
@@ -340,7 +336,7 @@ export default function AdminPanel() {
             ))}
           </List>
         </Paper>
-  
+
         {filteredArticles.length === 0 && (
           <Box mt={2}>
             <Alert severity="info">
@@ -348,25 +344,25 @@ export default function AdminPanel() {
             </Alert>
           </Box>
         )}
-  
+
         {filteredArticles.length > paginatedArticles.length && (
           <Box textAlign="center" mt={2}>
             <Button
               variant="outlined"
               onClick={() => setPage((prev) => prev + 1)}
-              disabled={!!form}
-            >
+              disabled={!!form}>
               Load More
             </Button>
           </Box>
         )}
-  
+
         <Footer />
       </Box>
-  
+
       {/* Dialogs & Snackbar */}
       {form && (
         <ArticleFormDialog
+          key={form.id || "new"}
           form={form}
           onChange={setForm}
           onSubmit={handleSubmit}
@@ -374,8 +370,10 @@ export default function AdminPanel() {
           onKeyDown={handleKeyDown}
         />
       )}
-  
-      <Dialog open={deleteDialogOpen} onClose={() => setDeleteDialogOpen(false)}>
+
+      <Dialog
+        open={deleteDialogOpen}
+        onClose={() => setDeleteDialogOpen(false)}>
         <DialogTitle>Confirm Delete</DialogTitle>
         <DialogContent>
           Are you sure you want to delete "{articleToDelete?.title}"?
@@ -387,43 +385,42 @@ export default function AdminPanel() {
           </Button>
         </DialogActions>
       </Dialog>
-  
-      <Dialog open={cancelDialogOpen} onClose={() => setCancelDialogOpen(false)}>
+
+      <Dialog
+        open={cancelDialogOpen}
+        onClose={() => setCancelDialogOpen(false)}>
         <DialogTitle>Discard Changes?</DialogTitle>
         <DialogContent>
           Are you sure you want to discard the changes you made?
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setCancelDialogOpen(false)}>Keep Editing</Button>
+          <Button onClick={() => setCancelDialogOpen(false)}>
+            Keep Editing
+          </Button>
           <Button
             color="error"
             variant="contained"
             onClick={() => {
               setForm(null);
               setCancelDialogOpen(false);
-            }}
-          >
+            }}>
             Discard
           </Button>
         </DialogActions>
       </Dialog>
-  
+
       <Snackbar
         open={showSnackbar}
         autoHideDuration={4000}
         onClose={() => setShowSnackbar(false)}
-        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-      >
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}>
         <MuiAlert
           severity={snackbarSeverity}
           onClose={() => setShowSnackbar(false)}
-          sx={{ width: "100%" }}
-        >
+          sx={{ width: "100%" }}>
           {snackbarMessage}
         </MuiAlert>
       </Snackbar>
     </Stack>
   );
-  
-  
 }
