@@ -7,9 +7,11 @@ import {
   Typography,
   Stack,
   Button,
+  Box,
 } from "@mui/material";
 import type { Tag } from "../types/Tag";
 import type { Article } from "../types/Article";
+import DOMPurify from "dompurify";
 
 interface SearchResultsListProps {
   articles: Article[];
@@ -54,26 +56,34 @@ const SearchResultsList: React.FC<SearchResultsListProps> = ({
                 }
                 secondary={
                   <>
-                    <Typography
-                      variant="body2"
-                      color="textSecondary"
-                      component="span">
-                      {(
-                        article.description || "No description available"
-                      ).slice(0, 100)}
-                      ...
-                    </Typography>
-                    <br />
+                    <Box
+                      sx={{
+                        color: "text.secondary",
+                        fontSize: "0.875rem",
+                        display: "-webkit-box",
+                        WebkitLineClamp: 2,
+                        WebkitBoxOrient: "vertical",
+                        overflow: "hidden",
+                      }}
+                      dangerouslySetInnerHTML={{
+                        __html: DOMPurify.sanitize(
+                          article.description || "<i>No description available</i>"
+                        ),
+                      }}
+                    />
+                
                     <Typography
                       variant="caption"
                       component="span"
-                      sx={{ fontWeight: "bold", color: "text.primary" }}>
+                      sx={{ fontWeight: "bold", color: "text.primary" }}
+                    >
                       Tags:
                     </Typography>{" "}
                     <Typography
                       variant="caption"
                       component="span"
-                      sx={{ color: "secondary.main" }}>
+                      sx={{ color: "secondary.main" }}
+                    >
                       {(article.tags ?? [])
                         .map((id) => tags.find((t: Tag) => t.id === id)?.name)
                         .filter((name): name is string => !!name)
@@ -84,21 +94,20 @@ const SearchResultsList: React.FC<SearchResultsListProps> = ({
                       variant="caption"
                       color="primary.main"
                       component="span"
-                      sx={{ fontWeight: 500 }}>
+                      sx={{ fontWeight: 500 }}
+                    >
                       Created:{" "}
                       {article.dateCreated
-                        ? new Date(article.dateCreated).toLocaleDateString(
-                            undefined,
-                            {
-                              year: "numeric",
-                              month: "short",
-                              day: "numeric",
-                            }
-                          )
+                        ? new Date(article.dateCreated).toLocaleDateString(undefined, {
+                            year: "numeric",
+                            month: "short",
+                            day: "numeric",
+                          })
                         : "Unknown"}
                     </Typography>
                   </>
                 }
+                
               />
             </ListItem>
           ))}
