@@ -166,8 +166,11 @@ export default function AdminPanel() {
   );
 
   const handleEdit = (article: Article) => {
-    setForm(normalizeArticle(article));
+    const normalized = normalizeArticle(article);
+    console.log("🛠 Editing article:", normalized);
+    setForm(normalized);
   };
+  
 
   const handleDelete = (id: string) => {
     setArticleToDelete(articles.find((a) => a.id === id) || null);
