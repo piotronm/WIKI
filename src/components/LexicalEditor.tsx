@@ -7,7 +7,7 @@ import { LinkPlugin } from "@lexical/react/LexicalLinkPlugin";
 import { HistoryPlugin } from "@lexical/react/LexicalHistoryPlugin";
 import { OnChangePlugin } from "@lexical/react/LexicalOnChangePlugin";
 import DOMPurify from "dompurify";
-
+import { LinkNode } from "@lexical/link";
 import type { EditorState, LexicalEditor as LexicalEditorInstance } from "lexical";
 import {
   Box,
@@ -48,6 +48,7 @@ export default function RichTextEditor({
       onError: (error: Error) => {
         console.error("Lexical error:", error);
       },
+      nodes: [LinkNode],
       editorState: () => {
         if (value && typeof value === "string") {
           return (editor: LexicalEditorInstance) => {
