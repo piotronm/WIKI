@@ -48,14 +48,14 @@ const SearchResultsList: React.FC<SearchResultsListProps> = ({
             }}
           >
             <Stack spacing={1}>
-              {/* Category */}
-              {article.category && (
+              {/* Platform displayed as label */}
+              {article.platform && (
                 <Typography
                   variant="overline"
                   color="secondary.main"
                   sx={{ fontWeight: 600 }}
                 >
-                  {article.category}
+                  {article.platform}
                 </Typography>
               )}
 
@@ -64,7 +64,7 @@ const SearchResultsList: React.FC<SearchResultsListProps> = ({
                 {article.title || "Untitled"}
               </Typography>
 
-              {/* Description */}
+              {/* Description preview */}
               <Box
                 sx={{
                   color: "text.secondary",
@@ -95,7 +95,6 @@ const SearchResultsList: React.FC<SearchResultsListProps> = ({
                       sx={{ fontWeight: 500 }}
                     />
                   ))}
-
                 {(!article.tags || article.tags.length === 0) && (
                   <Typography
                     variant="caption"
@@ -106,7 +105,7 @@ const SearchResultsList: React.FC<SearchResultsListProps> = ({
                 )}
               </Stack>
 
-              {/* Platform + Created Date */}
+              {/* Segment + Created date */}
               <Stack
                 direction="row"
                 justifyContent="space-between"
@@ -117,7 +116,7 @@ const SearchResultsList: React.FC<SearchResultsListProps> = ({
                   color="text.secondary"
                   sx={{ fontWeight: 500 }}
                 >
-                  Platform: {article.platform || "Unknown"}
+                  Segment: {article.segment || "Unknown"}
                 </Typography>
 
                 <Typography
