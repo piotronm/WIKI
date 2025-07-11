@@ -1,0 +1,50 @@
+src/
+├── components/
+│   ├── NavBar.tsx
+│   ├── AdminArticleListItem.tsx
+│   ├── ArticleCard.tsx
+│   ├── ArticleFormDialog.tsx
+│   ├── Filters.tsx
+│   ├── Footers.tsx
+│   ├── LexicalEditor.tsx
+│   ├── LexicalToolbar.tsx
+│   ├── SearchResults.tsx
+│   ├── SearchBar.tsx
+│   └── ProtectedRoute.tsx
+│── api/
+│   |──articles.ts
+|   ├──axiosInstance.ts
+|   ├──users.ts
+│   └── tags.ts
+|
+├── context/
+│   ├── AuthContext.tsx
+│   ├── Tags.tsx
+│   └── ArticlesContext.tsx
+│
+├── pages/
+│   ├── Home.tsx
+│   ├── Article.tsx
+│   ├── Login.tsx
+│   ├── SearchPage.tsx
+│   ├── AdminPanel.tsx
+│   ├── UnauthorizedPage.tsx
+│   └── NotFoundPage.tsx
+│
+├── routes/
+│   └── AppRoutes.tsx
+│├── types/
+│   └── Article.ts
+│   └── Tag.ts
+│
+├─store/
+│   ├── articleSlice.ts
+│   ├──index.ts
+│   └── authSlice.ts
+│─utils/
+│   ├── normalize.ts
+│   └── useDebouncedValue.ts
+│
+├── App.tsx
+├── main.tsx
+├── config.ts
