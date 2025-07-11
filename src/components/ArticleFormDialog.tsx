@@ -86,6 +86,7 @@ const ArticleFormDialog: React.FC<ArticleFormDialogProps> = ({
 
     loadTags();
   }, []);
+  console.log("form received in dialog:", form);
 
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     onChange({ ...form, title: e.target.value });
