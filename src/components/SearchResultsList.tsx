@@ -6,7 +6,6 @@ import {
   Button,
   Box,
   Chip,
-  Divider,
 } from "@mui/material";
 import type { Tag } from "../types/Tag";
 import type { Article } from "../types/Article";
@@ -49,10 +48,23 @@ const SearchResultsList: React.FC<SearchResultsListProps> = ({
             }}
           >
             <Stack spacing={1}>
+              {/* Category */}
+              {article.category && (
+                <Typography
+                  variant="overline"
+                  color="secondary.main"
+                  sx={{ fontWeight: 600 }}
+                >
+                  {article.category}
+                </Typography>
+              )}
+
+              {/* Title */}
               <Typography variant="h6" fontWeight={600}>
                 {article.title || "Untitled"}
               </Typography>
 
+              {/* Description */}
               <Box
                 sx={{
                   color: "text.secondary",
@@ -69,6 +81,7 @@ const SearchResultsList: React.FC<SearchResultsListProps> = ({
                 }}
               />
 
+              {/* Tags */}
               <Stack direction="row" spacing={1} flexWrap="wrap">
                 {(article.tags ?? [])
                   .map((id) => tags.find((t: Tag) => t.id === id)?.name)
@@ -93,27 +106,41 @@ const SearchResultsList: React.FC<SearchResultsListProps> = ({
                 )}
               </Stack>
 
-              <Divider sx={{ my: 1 }} />
-
-              <Typography
-                variant="caption"
-                color="primary.main"
-                sx={{ fontWeight: 500 }}
+              {/* Platform + Created Date */}
+              <Stack
+                direction="row"
+                justifyContent="space-between"
+                alignItems="center"
               >
-                Created:{" "}
-                {article.dateCreated
-                  ? new Date(article.dateCreated).toLocaleDateString(undefined, {
-                      year: "numeric",
-                      month: "short",
-                      day: "numeric",
-                    })
-                  : "Unknown"}
-              </Typography>
+                <Typography
+                  variant="caption"
+                  color="text.secondary"
+                  sx={{ fontWeight: 500 }}
+                >
+                  Platform: {article.platform || "Unknown"}
+                </Typography>
+
+                <Typography
+                  variant="caption"
+                  color="primary.main"
+                  sx={{ fontWeight: 500 }}
+                >
+                  Created:{" "}
+                  {article.dateCreated
+                    ? new Date(article.dateCreated).toLocaleDateString(undefined, {
+                        year: "numeric",
+                        month: "short",
+                        day: "numeric",
+                      })
+                    : "Unknown"}
+                </Typography>
+              </Stack>
             </Stack>
           </Paper>
         ))}
       </Stack>
 
+      {/* Pagination */}
       {articles.length > pageSize && (
         <Stack
           direction="row"
