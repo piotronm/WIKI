@@ -360,15 +360,18 @@ export default function AdminPanel() {
       </Box>
 
       {/* Dialogs & Snackbar */}
-      {form && (
-        <ArticleFormDialog
-          key={form.id || "new"}
-          form={form}
-          onChange={setForm}
-          onSubmit={handleSubmit}
-          onClose={handleArticleFormClose}
-          onKeyDown={handleKeyDown}
-        />
+      {form !== null && (
+        <>
+          {console.log("AdminPanel → Form passed to ArticleFormDialog:", form)}
+          <ArticleFormDialog
+            key={form.id || "new"}
+            form={form}
+            onChange={setForm}
+            onSubmit={handleSubmit}
+            onClose={handleArticleFormClose}
+            onKeyDown={handleKeyDown}
+          />
+        </>
       )}
 
       <Dialog
