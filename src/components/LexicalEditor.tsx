@@ -58,6 +58,7 @@ export default function RichTextEditor({
       nodes: [LinkNode, HeadingNode, ListNode, ListItemNode, QuoteNode],
     };
   }, [value]);
+  console.log(" RichTextEditor initial value:", value);
 
   const handleBlur = () => {
     const rawHtml =
