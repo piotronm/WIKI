@@ -181,8 +181,8 @@ const ArticleFormDialog: React.FC<ArticleFormDialogProps> = ({
                 onChange={handleTitleChange}
                 fullWidth
                 required
-                error={!form?.title?.trim()}
-                helperText={!form?.title?.trim() ? "Title is required" : ""}
+                error={validationErrors.title}
+                helperText={validationErrors.title ? "Title is required" : ""}
               />
               <Box ref={descriptionRef}>
                 <RichTextEditor
@@ -223,7 +223,10 @@ const ArticleFormDialog: React.FC<ArticleFormDialogProps> = ({
                 </Select>
               </FormControl>
               <Box ref={platformRef}>
-                <FormControl fullWidth required>
+                <FormControl
+                  fullWidth
+                  required
+                  error={validationErrors.platform}>
                   <InputLabel id="platform-label">Platform</InputLabel>
                   <Select
                     labelId="platform-label"
@@ -231,15 +234,14 @@ const ArticleFormDialog: React.FC<ArticleFormDialogProps> = ({
                     label="Platform"
                     onChange={(e) =>
                       onChange({ ...form, platform: e.target.value })
-                    }
-                    error={!form.platform?.trim()}>
+                    }>
                     {platformOptions.map((p) => (
                       <MenuItem key={p} value={p}>
                         {p}
                       </MenuItem>
                     ))}
                   </Select>
-                  {!form?.platform && (
+                  {validationErrors.platform && (
                     <Box pl={2} pt={0.5}>
                       <Alert severity="error" variant="outlined">
                         Platform is required
@@ -248,6 +250,7 @@ const ArticleFormDialog: React.FC<ArticleFormDialogProps> = ({
                   )}
                 </FormControl>
               </Box>
+
               <TextField
                 label="Segment"
                 value={form?.segment || ""}
