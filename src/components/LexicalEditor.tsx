@@ -1,4 +1,4 @@
-import { useMemo, useRef, useEffect, useState } from "react";
+import { useMemo, useRef, useEffect } from "react";
 import { LexicalComposer } from "@lexical/react/LexicalComposer";
 import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin";
 import { ContentEditable } from "@lexical/react/LexicalContentEditable";
@@ -9,7 +9,8 @@ import { HeadingNode, QuoteNode } from "@lexical/rich-text";
 import { ListNode, ListItemNode } from "@lexical/list";
 import { LinkNode } from "@lexical/link";
 import { $generateNodesFromDOM } from "@lexical/html";
-import type { LexicalEditor } from "lexical";
+import { $getRoot, $insertNodes, $getSelection } from "lexical";
+import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import DOMPurify from "dompurify";
 
 import { Box, Typography, Stack } from "@mui/material";
@@ -22,20 +23,32 @@ type Props = {
   showPreview?: boolean;
 };
 
+function RichTextContentLoader({ value }: { value: string }) {
+  const [editor] = useLexicalComposerContext();
+
+  useEffect(() => {
+    const parser = new DOMParser();
+    const sanitized = DOMPurify.sanitize(value || "");
+    const dom = parser.parseFromString(sanitized, "text/html");
+
+    editor.update(() => {
+      const nodes = $generateNodesFromDOM(editor, dom);
+      const root = $getRoot();
+      root.clear();
+      $insertNodes(nodes);
+      $getSelection()?.insertNodes([]);
+    });
+  }, [editor, value]);
+
+  return null;
+}
+
 export default function RichTextEditor({
   value,
   onChange,
   label = "Rich Text Editor",
 }: Props) {
   const editableRef = useRef<HTMLDivElement | null>(null);
-  const [editorReady, setEditorReady] = useState(false);
-
-  // Force editor reset when value changes
-  useEffect(() => {
-    setEditorReady(false);
-    const timeout = setTimeout(() => setEditorReady(true), 0);
-    return () => clearTimeout(timeout);
-  }, [value]);
 
   const initialConfig = useMemo(() => {
     return {
@@ -44,27 +57,10 @@ export default function RichTextEditor({
       onError: (error: Error) => {
         console.error("Lexical error:", error);
       },
-      editorState: (editor: LexicalEditor) => {
-        if (!value) return;
-        const parser = new DOMParser();
-        const dom = parser.parseFromString(value, "text/html");
-        editor.update(() => {
-          const nodes = $generateNodesFromDOM(editor, dom);
-          const root = editor.getRootElement();
-          if (root && nodes.length > 0) {
-            editor.setEditable(true);
-            editor.getEditorState().read(() => {
-              const editorRoot = editor.getRootElement();
-              if (editorRoot) {
-                root.replaceChildren(...dom.body.childNodes);
-              }
-            });
-          }
-        });
-      },
+      editorState: null,
       nodes: [LinkNode, HeadingNode, ListNode, ListItemNode, QuoteNode],
     };
-  }, [value]);
+  }, []);
 
   const handleBlur = () => {
     const rawHtml = editableRef.current?.innerHTML || "";
@@ -95,34 +91,33 @@ export default function RichTextEditor({
           {label}
         </Typography>
 
-        {editorReady && (
-          <LexicalComposer initialConfig={initialConfig}>
-            <LexicalToolbar />
-            <RichTextPlugin
-              contentEditable={
-                <ContentEditable
-                  ref={editableRef}
-                  aria-label={`${label} input`}
-                  onBlur={handleBlur}
-                  style={{
-                    outline: "none",
-                    minHeight: "180px",
-                    fontSize: "1rem",
-                    padding: "8px 0",
-                  }}
-                />
-              }
-              placeholder={
-                <Typography color="text.secondary">
-                  Write your content here…
-                </Typography>
-              }
-              ErrorBoundary={LexicalErrorBoundary}
-            />
-            <HistoryPlugin />
-            <LinkPlugin />
-          </LexicalComposer>
-        )}
+        <LexicalComposer initialConfig={initialConfig}>
+          <LexicalToolbar />
+          <RichTextPlugin
+            contentEditable={
+              <ContentEditable
+                ref={editableRef}
+                aria-label={`${label} input`}
+                onBlur={handleBlur}
+                style={{
+                  outline: "none",
+                  minHeight: "180px",
+                  fontSize: "1rem",
+                  padding: "8px 0",
+                }}
+              />
+            }
+            placeholder={
+              <Typography color="text.secondary">
+                Write your content here…
+              </Typography>
+            }
+            ErrorBoundary={LexicalErrorBoundary}
+          />
+          <HistoryPlugin />
+          <LinkPlugin />
+          <RichTextContentLoader value={value} />
+        </LexicalComposer>
       </Box>
     </Stack>
   );
