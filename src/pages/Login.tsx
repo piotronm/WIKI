@@ -26,21 +26,18 @@ export default function Login() {
     setLoading(true);
 
     try {
-      const response = await api.post("/User", {
-        username,
-        password,
-      });
+      // Send credentials in the request body
+      const response = await api.post("/User", { username, password });
 
-      if (response.status === 200 && response.data?.isAdmin) {
-        // Successful admin login
-        login(response.data.id, "admin");
+      if (response.status === 200) {
+        // Login successful, user is considered admin
+        login("session-ok", "admin"); // You can optionally use userId instead of 'session-ok'
         navigate("/admin");
       } else {
-        // Valid credentials but not an admin
-        setErrorMsg("You are not authorized to access this panel.");
+        setErrorMsg("Login failed. You are not authorized.");
       }
     } catch (err: any) {
-      console.error("Login failed:", err);
+      console.error("Login error:", err);
       setErrorMsg(
         err.response?.status === 401
           ? "Invalid username or password."
