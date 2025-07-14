@@ -24,29 +24,29 @@ export default function Login() {
     e.preventDefault();
     setErrorMsg(null);
     setLoading(true);
-
+  
     try {
-      // Send credentials in the request body
-      const response = await api.post("/User", { username, password });
-
-      if (response.status === 200) {
-        // Login successful, user is considered admin
-        login("session-ok", "admin"); // You can optionally use userId instead of 'session-ok'
+      const response = await api.post("/User", {
+        username,
+        password,
+      });
+  
+      if (response.status === 200 && response.data === true) {
+        // ✅ Credentials are valid
+        login("session-ok", "admin");
         navigate("/admin");
       } else {
-        setErrorMsg("Login failed. You are not authorized.");
+        // ❌ response was 200 but credentials invalid
+        setErrorMsg("Invalid username or password.");
       }
     } catch (err: any) {
       console.error("Login error:", err);
-      setErrorMsg(
-        err.response?.status === 401
-          ? "Invalid username or password."
-          : "Login failed. Please try again later."
-      );
+      setErrorMsg("Login failed. Please try again later.");
     } finally {
       setLoading(false);
     }
   };
+  
 
   return (
     <Box maxWidth="sm" mx="auto" mt={8}>
