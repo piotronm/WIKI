@@ -1,4 +1,3 @@
-// src/pages/Login.tsx
 import { useState } from "react";
 import {
   Box,
@@ -27,17 +26,18 @@ export default function Login() {
     setLoading(true);
 
     try {
-      const response = await api.post(
-        `/User?username=${encodeURIComponent(
-          username
-        )}&password=${encodeURIComponent(password)}`
-      );
+      const response = await api.post("/User", {
+        username,
+        password,
+      });
 
-      if (response.status >= 200 && response.status < 300) {
-        login("session-ok", "admin");
+      if (response.status === 200 && response.data?.isAdmin) {
+        // Successful admin login
+        login(response.data.id, "admin");
         navigate("/admin");
       } else {
-        setErrorMsg("Login failed.");
+        // Valid credentials but not an admin
+        setErrorMsg("You are not authorized to access this panel.");
       }
     } catch (err: any) {
       console.error("Login failed:", err);
@@ -67,6 +67,8 @@ export default function Login() {
             onChange={(e) => setUsername(e.target.value)}
             margin="normal"
             required
+            autoFocus
+            error={!!errorMsg}
           />
           <TextField
             fullWidth
@@ -77,6 +79,7 @@ export default function Login() {
             onChange={(e) => setPassword(e.target.value)}
             margin="normal"
             required
+            error={!!errorMsg}
           />
 
           {errorMsg && (
@@ -91,7 +94,8 @@ export default function Login() {
             variant="contained"
             color="primary"
             sx={{ mt: 3 }}
-            disabled={loading}>
+            disabled={loading}
+          >
             {loading ? <CircularProgress size={24} /> : "Login"}
           </Button>
         </form>
