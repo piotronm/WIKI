@@ -163,7 +163,7 @@ export default function AdminPanel() {
   const handleEdit = (article: Article) => {
     const normalized = normalizeArticle(article);
     console.log("🛠 Editing article:", normalized);
-    setForm({ ...article });
+    setForm(normalizeArticle(article));
   };
 
   const handleDelete = (id: string) => {
