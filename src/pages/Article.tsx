@@ -117,7 +117,8 @@ export default function Article() {
         backgroundColor: theme.palette.background.default,
         minHeight: "100vh",
         paddingTop: "64px",
-      }}>
+      }}
+    >
       {/* Back Button */}
       <Tooltip title="Go Back">
         <IconButton
@@ -130,11 +131,13 @@ export default function Article() {
             "&:hover": {
               backgroundColor: theme.palette.action.selected,
             },
-          }}>
+          }}
+        >
           <ArrowBackIcon />
         </IconButton>
       </Tooltip>
-
+  
+      {/* Main Article Content */}
       <Fade in>
         <Paper elevation={3} sx={{ p: { xs: 3, md: 4 }, borderRadius: 3 }}>
           {/* Title */}
@@ -142,26 +145,25 @@ export default function Article() {
             variant="h4"
             fontWeight="bold"
             gutterBottom
-            sx={{ fontSize: { xs: "1.75rem", md: "2.125rem" } }}>
+            sx={{ fontSize: { xs: "1.75rem", md: "2.25rem" } }}
+          >
             {article.title}
           </Typography>
-
-          {/* Meta Info */}
+  
+          {/* Meta Section */}
           <Stack
             direction="row"
             spacing={2}
-            alignItems="center"
             flexWrap="wrap"
-            mb={2}>
+            alignItems="center"
+            mb={2}
+          >
             <Typography variant="subtitle2" color="text.secondary">
               Created on: {formattedDate}
             </Typography>
+  
             {tagNames.length > 0 && (
-              <Stack
-                direction="row"
-                spacing={1}
-                alignItems="center"
-                flexWrap="wrap">
+              <Stack direction="row" spacing={1} alignItems="center" flexWrap="wrap">
                 <LabelOutlinedIcon fontSize="small" color="action" />
                 {tagNames.map((name) => (
                   <Chip
@@ -170,7 +172,7 @@ export default function Article() {
                     size="small"
                     sx={{
                       fontWeight: 500,
-                      borderRadius: 2,
+                      borderRadius: "16px",
                       backgroundColor: theme.palette.primary.light,
                       color: theme.palette.primary.contrastText,
                     }}
@@ -179,9 +181,12 @@ export default function Article() {
               </Stack>
             )}
           </Stack>
-
+  
           {/* Description */}
           <Divider sx={{ my: 3 }} />
+          <Typography variant="h6" fontWeight="medium" gutterBottom>
+            Overview
+          </Typography>
           {article.description ? (
             <Box
               sx={{ fontSize: "1rem", color: "text.primary", mb: 3 }}
@@ -192,7 +197,7 @@ export default function Article() {
           ) : (
             <Alert severity="info">No description provided.</Alert>
           )}
-
+  
           {/* Solution Section */}
           <Divider textAlign="left" sx={{ my: 4 }}>
             <Chip
@@ -201,6 +206,7 @@ export default function Article() {
               variant="outlined"
             />
           </Divider>
+  
           {article.solution ? (
             <Box
               sx={{
@@ -208,6 +214,7 @@ export default function Article() {
                 backgroundColor: theme.palette.action.hover,
                 p: 2,
                 borderRadius: 2,
+                whiteSpace: "pre-wrap",
               }}
               dangerouslySetInnerHTML={{
                 __html: DOMPurify.sanitize(article.solution),
@@ -216,7 +223,7 @@ export default function Article() {
           ) : (
             <Alert severity="info">No solution steps provided.</Alert>
           )}
-
+  
           {/* Image Section */}
           {(article.imageUrl1 || article.imageUrl2) && (
             <Accordion
@@ -226,7 +233,8 @@ export default function Article() {
                 borderRadius: 2,
                 "&:before": { display: "none" },
               }}
-              onChange={(_, expanded) => setShowImages(expanded)}>
+              onChange={(_, expanded) => setShowImages(expanded)}
+            >
               <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                 <Box display="flex" alignItems="center" gap={1}>
                   <ImageIcon />
@@ -256,8 +264,8 @@ export default function Article() {
               </AccordionDetails>
             </Accordion>
           )}
-
-          {/* Technical Details Section */}
+  
+          {/* Technical Details */}
           <Divider textAlign="left" sx={{ my: 4 }}>
             <Chip
               icon={<InfoOutlinedIcon />}
@@ -265,14 +273,15 @@ export default function Article() {
               variant="outlined"
             />
           </Divider>
-
+  
           <Box
             sx={{
               p: 2,
               border: `1px dashed ${theme.palette.divider}`,
               backgroundColor: theme.palette.action.hover,
               borderRadius: 2,
-            }}>
+            }}
+          >
             <Stack spacing={1}>
               <Typography variant="body2">
                 <strong>Platform:</strong> {article.platform}
@@ -292,4 +301,5 @@ export default function Article() {
       </Fade>
     </Box>
   );
+  
 }
