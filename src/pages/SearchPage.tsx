@@ -74,9 +74,13 @@ const SearchPage = () => {
     return baseArticles
       .filter((article) => {
         const inTags = article.tags || [];
+        const selectedTagIds = tags
+          .filter((t) => activeTags.includes(t.name))
+          .map((t) => t.id);
+
         const tagCondition =
-          activeTags.length === 0 ||
-          inTags.some((tag) => activeTags.includes(tag));
+          selectedTagIds.length === 0 ||
+          inTags.some((tagId) => selectedTagIds.includes(tagId));
 
         const created = new Date(article.dateCreated ?? "");
         const afterStart = startDate ? created >= startDate : true;
@@ -110,8 +114,7 @@ const SearchPage = () => {
       mx="auto"
       my={4}
       px={{ xs: 2, md: 4 }}
-      sx={{ paddingTop: "64px" }} 
-    >
+      sx={{ paddingTop: "64px" }}>
       <Paper elevation={3} sx={{ p: { xs: 2, md: 4 }, mb: 4 }}>
         <Typography variant="h4" gutterBottom sx={{ fontWeight: "bold" }}>
           Search Knowledge Base
