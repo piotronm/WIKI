@@ -10,6 +10,7 @@ import {
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import api from "../api/axiosInstance";
 
 export default function Login() {
   const { login } = useAuth();
@@ -23,9 +24,13 @@ export default function Login() {
     e.preventDefault();
     setErrorMsg(null);
     setLoading(true);
-
+  
     try {
-
+      await api.post("/User", {
+        username,
+        password,
+      });
+  
       login("session-ok", "admin");
       navigate("/admin");
     } catch (err: any) {
@@ -39,6 +44,8 @@ export default function Login() {
       setLoading(false);
     }
   };
+  
+  
 
   return (
     <Box maxWidth="sm" mx="auto" mt={8}>
