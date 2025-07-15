@@ -23,7 +23,6 @@ import { useTheme } from "@mui/material/styles";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ImageIcon from "@mui/icons-material/Image";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
-import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import LabelOutlinedIcon from "@mui/icons-material/LabelOutlined";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { useTags } from "../context/TagsContext";
@@ -137,33 +136,43 @@ export default function Article() {
         </IconButton>
       </Tooltip>
   
-      {/* Main Article Content */}
+      {/* Main Article Card */}
       <Fade in>
         <Paper elevation={3} sx={{ p: { xs: 3, md: 4 }, borderRadius: 3 }}>
-          {/* Title */}
-          <Typography
-            variant="h4"
-            fontWeight="bold"
-            gutterBottom
-            sx={{ fontSize: { xs: "1.75rem", md: "2.25rem" } }}
-          >
-            {article.title}
-          </Typography>
-  
-          {/* Meta Section */}
-          <Stack
-            direction="row"
-            spacing={2}
-            flexWrap="wrap"
-            alignItems="center"
-            mb={2}
-          >
-            <Typography variant="subtitle2" color="text.secondary">
-              Created on: {formattedDate}
+          {/* Header */}
+          <Stack spacing={2} mb={3}>
+            {/* Title */}
+            <Typography variant="h4" fontWeight="bold">
+              {article.title}
             </Typography>
   
+            {/* Technical Info */}
+            <Stack
+              direction={{ xs: "column", sm: "row" }}
+              spacing={2}
+              divider={<Divider orientation="vertical" flexItem />}
+              flexWrap="wrap"
+            >
+              <Typography variant="body2" color="text.secondary">
+                <strong>Platform:</strong> {article.platform}
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                <strong>Category:</strong> {article.category}
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                <strong>Segment:</strong> {article.segment}
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                <strong>User ID:</strong> {article.userId}
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                <strong>Created:</strong> {formattedDate}
+              </Typography>
+            </Stack>
+  
+            {/* Tags */}
             {tagNames.length > 0 && (
-              <Stack direction="row" spacing={1} alignItems="center" flexWrap="wrap">
+              <Stack direction="row" spacing={1} flexWrap="wrap">
                 <LabelOutlinedIcon fontSize="small" color="action" />
                 {tagNames.map((name) => (
                   <Chip
@@ -182,11 +191,11 @@ export default function Article() {
             )}
           </Stack>
   
-          {/* Description */}
-          <Divider sx={{ my: 3 }} />
-          <Typography variant="h6" fontWeight="medium" gutterBottom>
-            Overview
-          </Typography>
+          {/* Overview */}
+          <Divider textAlign="left" sx={{ my: 4 }}>
+            <Chip label="Overview" variant="outlined" />
+          </Divider>
+  
           {article.description ? (
             <Box
               sx={{ fontSize: "1rem", color: "text.primary", mb: 3 }}
@@ -198,7 +207,7 @@ export default function Article() {
             <Alert severity="info">No description provided.</Alert>
           )}
   
-          {/* Solution Section */}
+          {/* Solution */}
           <Divider textAlign="left" sx={{ my: 4 }}>
             <Chip
               icon={<CheckCircleOutlineIcon />}
@@ -224,7 +233,7 @@ export default function Article() {
             <Alert severity="info">No solution steps provided.</Alert>
           )}
   
-          {/* Image Section */}
+          {/* Images */}
           {(article.imageUrl1 || article.imageUrl2) && (
             <Accordion
               sx={{
@@ -264,42 +273,10 @@ export default function Article() {
               </AccordionDetails>
             </Accordion>
           )}
-  
-          {/* Technical Details */}
-          <Divider textAlign="left" sx={{ my: 4 }}>
-            <Chip
-              icon={<InfoOutlinedIcon />}
-              label="Technical Details"
-              variant="outlined"
-            />
-          </Divider>
-  
-          <Box
-            sx={{
-              p: 2,
-              border: `1px dashed ${theme.palette.divider}`,
-              backgroundColor: theme.palette.action.hover,
-              borderRadius: 2,
-            }}
-          >
-            <Stack spacing={1}>
-              <Typography variant="body2">
-                <strong>Platform:</strong> {article.platform}
-              </Typography>
-              <Typography variant="body2">
-                <strong>Category:</strong> {article.category}
-              </Typography>
-              <Typography variant="body2">
-                <strong>Segment:</strong> {article.segment}
-              </Typography>
-              <Typography variant="body2">
-                <strong>User ID:</strong> {article.userId}
-              </Typography>
-            </Stack>
-          </Box>
         </Paper>
       </Fade>
     </Box>
   );
+  
   
 }
