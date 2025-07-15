@@ -134,19 +134,24 @@ export default function AdminPanel() {
       debouncedQuery.trim().length >= 2
         ? fuseResults.map((r) => r.item)
         : articles;
-
+  
+    const selectedTagIds = tags
+      .filter((t) => activeTags.includes(t.name))
+      .map((t) => t.id);
+  
     return baseArticles
       .filter(
         (article) =>
-          activeTags.length === 0 ||
-          article.tags.some((tagId) => activeTags.includes(tagId))
+          selectedTagIds.length === 0 ||
+          article.tags.some((tagId) => selectedTagIds.includes(tagId))
       )
       .sort((a, b) => {
         const aTime = new Date(a.dateCreated ?? 0).getTime();
         const bTime = new Date(b.dateCreated ?? 0).getTime();
         return sortBy === "newest" ? bTime - aTime : aTime - bTime;
       });
-  }, [articles, fuseResults, debouncedQuery, activeTags, sortBy]);
+  }, [articles, fuseResults, debouncedQuery, activeTags, sortBy, tags]);
+  
 
   const paginatedArticles = filteredArticles.slice(0, page * pageSize);
 
