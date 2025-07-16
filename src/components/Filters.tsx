@@ -1,5 +1,4 @@
 // src/components/Filters.tsx
-import { useState, useRef, useEffect } from "react";
 import {
   Box,
   Chip,
@@ -7,13 +6,10 @@ import {
   InputLabel,
   Select,
   MenuItem,
-  IconButton,
   Stack,
   Button,
   Typography,
 } from "@mui/material";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import { useTags } from "../context/TagsContext";
 import { useArticles } from "../context/ArticlesContext";
 
@@ -36,8 +32,6 @@ const Filters = ({
   setSortBy,
   onResetFilters,
 }: FiltersProps) => {
-  const [filtersVisible, setFiltersVisible] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement | null>(null);
   const { tags } = useTags();
   const { articles } = useArticles();
 
@@ -48,44 +42,15 @@ const Filters = ({
     setActiveTags(updatedTags);
   };
 
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node)
-      ) {
-        setFiltersVisible(false);
-      }
-    };
-
-    if (filtersVisible) {
-      document.addEventListener("mousedown", handleClickOutside);
-    } else {
-      document.removeEventListener("mousedown", handleClickOutside);
-    }
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [filtersVisible]);
-
   return (
-    <Box mt={2} position="relative">
+    <Box>
       <Box
         display="flex"
         justifyContent="space-between"
         alignItems="center"
-        mb={1}
+        mb={2}
       >
-        <Box display="flex" alignItems="center" gap={1}>
-          <IconButton
-            onClick={() => setFiltersVisible((prev) => !prev)}
-            size="small"
-          >
-            {filtersVisible ? <ExpandLessIcon /> : <ExpandMoreIcon />}
-          </IconButton>
-          <span style={{ fontWeight: 600, fontSize: "1rem" }}>Filters</span>
-        </Box>
+        <span style={{ fontWeight: 600, fontSize: "1rem" }}>Filters</span>
   
         <FormControl size="small">
           <InputLabel id="sort-select-label">Sort By</InputLabel>
@@ -101,99 +66,89 @@ const Filters = ({
         </FormControl>
       </Box>
   
-      {filtersVisible && (
-        <Box
-          ref={dropdownRef}
-          position="absolute"
-          top="100%"
-          left={0}
-          width="100%"
-          zIndex={10}
-          sx={{
-            backdropFilter: "blur(4px)",
-            backgroundColor: "rgba(255, 255, 255, 0.95)",
-            border: "1px solid #ddd",
-            borderRadius: 2,
-            boxShadow: 4,
-            p: 2,
-            mt: 1,
-          }}
-        >
-          <Stack spacing={3}>
-            {/* Tags Section */}
-            <Box>
-              <Typography
-                variant="subtitle2"
-                fontWeight="bold"
-                gutterBottom
-                color="text.secondary"
-              >
-                Tags
-              </Typography>
-              <Box display="flex" flexWrap="wrap" gap={1}>
-                {tags.map((tag) => {
-                  if (!tag.id) console.warn("Missing tag ID", tag);
-                  return (
-                    <Chip
-                      key={tag.id}
-                      label={tag.name}
-                      color={
-                        activeTags.includes(tag.name) ? "primary" : "default"
-                      }
-                      onClick={() => handleTagClick(tag.name)}
-                      clickable
-                    />
-                  );
-                })}
-              </Box>
+      <Box
+        sx={{
+          backgroundColor: "rgba(255, 255, 255, 0.95)",
+          border: "1px solid #ddd",
+          borderRadius: 2,
+          boxShadow: 2,
+          p: 2,
+        }}
+      >
+        <Stack spacing={3}>
+          {/* Tags Section */}
+          <Box>
+            <Typography
+              variant="subtitle2"
+              fontWeight="bold"
+              gutterBottom
+              color="text.secondary"
+            >
+              Tags
+            </Typography>
+            <Box display="flex" flexWrap="wrap" gap={1}>
+              {tags.map((tag) => {
+                if (!tag.id) console.warn("Missing tag ID", tag);
+                return (
+                  <Chip
+                    key={tag.id}
+                    label={tag.name}
+                    color={
+                      activeTags.includes(tag.name) ? "primary" : "default"
+                    }
+                    onClick={() => handleTagClick(tag.name)}
+                    clickable
+                  />
+                );
+              })}
             </Box>
+          </Box>
   
-            {/* Platform Section */}
-            <Box>
-              <Typography
-                variant="subtitle2"
-                fontWeight="bold"
-                gutterBottom
-                color="text.secondary"
-              >
-                Platform
-              </Typography>
-              <Box display="flex" flexWrap="wrap" gap={1}>
-                {Array.from(
-                  new Set(articles.map((a) => a.platform).filter(Boolean))
-                )
-                  .sort()
-                  .map((platform) => (
-                    <Chip
-                      key={platform}
-                      label={platform}
-                      color={
-                        activePlatform === platform ? "primary" : "default"
-                      }
-                      onClick={() =>
-                        setActivePlatform(
-                          activePlatform === platform ? "" : platform
-                        )
-                      }
-                      clickable
-                    />
-                  ))}
-              </Box>
+          {/* Platform Section */}
+          <Box>
+            <Typography
+              variant="subtitle2"
+              fontWeight="bold"
+              gutterBottom
+              color="text.secondary"
+            >
+              Platform
+            </Typography>
+            <Box display="flex" flexWrap="wrap" gap={1}>
+              {Array.from(
+                new Set(articles.map((a) => a.platform).filter(Boolean))
+              )
+                .sort()
+                .map((platform) => (
+                  <Chip
+                    key={platform}
+                    label={platform}
+                    color={
+                      activePlatform === platform ? "primary" : "default"
+                    }
+                    onClick={() =>
+                      setActivePlatform(
+                        activePlatform === platform ? "" : platform
+                      )
+                    }
+                    clickable
+                  />
+                ))}
             </Box>
+          </Box>
   
-            {/* Reset Button */}
-            <Box display="flex" justifyContent="flex-end">
-              <Button
-                variant="outlined"
-                color="secondary"
-                onClick={onResetFilters}
-              >
-                Reset Filters
-              </Button>
-            </Box>
-          </Stack>
-        </Box>
-      )}
+          {/* Reset Button */}
+          <Box display="flex" justifyContent="flex-end">
+            <Button
+              variant="outlined"
+              color="secondary"
+              onClick={onResetFilters}
+            >
+              Reset Filters
+            </Button>
+          </Box>
+        </Stack>
+      </Box>
     </Box>
   );
   
