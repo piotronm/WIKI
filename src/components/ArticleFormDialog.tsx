@@ -125,8 +125,21 @@ const ArticleFormDialog: React.FC<ArticleFormDialogProps> = ({
       open={!!form}
       onClose={onClose}
       fullScreen
-      aria-labelledby="article-form-dialog-title">
-      <DialogTitle id="article-form-dialog-title">{dialogTitle}</DialogTitle>
+      aria-labelledby="article-form-dialog-title"
+      PaperProps={{
+        sx: { bgcolor: "background.default" },
+      }}>
+      <DialogTitle
+        id="article-form-dialog-title"
+        sx={{
+          fontWeight: 600,
+          fontSize: "1.5rem",
+          bgcolor: "background.paper",
+          borderBottom: "1px solid",
+          borderColor: "divider",
+        }}>
+        {dialogTitle}
+      </DialogTitle>
 
       {loadingTags ? (
         <Box
@@ -138,40 +151,45 @@ const ArticleFormDialog: React.FC<ArticleFormDialogProps> = ({
         </Box>
       ) : (
         <>
-          <DialogContent onKeyDown={onKeyDown}>
-            <Stack spacing={2} sx={{ mt: 2 }}>
+          <DialogContent
+            onKeyDown={onKeyDown}
+            sx={{
+              p: { xs: 2, sm: 3 },
+              bgcolor: "background.default",
+            }}>
+            <Stack spacing={3}>
               {tagLoadError && (
-                <Box>
-                  <Alert
-                    severity="error"
-                    action={
-                      <Button
-                        color="inherit"
-                        size="small"
-                        onClick={() => {
-                          setLoadingTags(true);
-                          setTagLoadError(false);
-                          fetchTags()
-                            .then((tags) => setAvailableTags(tags))
-                            .catch((err) => {
-                              console.error("Retry failed:", err);
-                              setAvailableTags([]);
-                              setTagLoadError(true);
-                            })
-                            .finally(() => setLoadingTags(false));
-                        }}>
-                        Retry
-                      </Button>
-                    }>
-                    Failed to load tags. Saving is disabled until the issue is
-                    resolved.
-                  </Alert>
-                </Box>
+                <Alert
+                  severity="error"
+                  action={
+                    <Button
+                      color="inherit"
+                      size="small"
+                      onClick={() => {
+                        setLoadingTags(true);
+                        setTagLoadError(false);
+                        fetchTags()
+                          .then((tags) => setAvailableTags(tags))
+                          .catch((err) => {
+                            console.error("Retry failed:", err);
+                            setAvailableTags([]);
+                            setTagLoadError(true);
+                          })
+                          .finally(() => setLoadingTags(false));
+                      }}>
+                      Retry
+                    </Button>
+                  }>
+                  Failed to load tags. Saving is disabled until the issue is
+                  resolved.
+                </Alert>
               )}
 
+              {/* Title */}
               <TextField
                 inputRef={titleRef}
                 label="Title"
+                variant="outlined"
                 value={form?.title || ""}
                 onChange={handleTitleChange}
                 fullWidth
@@ -179,6 +197,8 @@ const ArticleFormDialog: React.FC<ArticleFormDialogProps> = ({
                 error={validationErrors.title}
                 helperText={validationErrors.title ? "Title is required" : ""}
               />
+
+              {/* Description */}
               <Box ref={descriptionRef}>
                 <RichTextEditor
                   key={`desc-${form.id}`}
@@ -194,6 +214,7 @@ const ArticleFormDialog: React.FC<ArticleFormDialogProps> = ({
                 )}
               </Box>
 
+              {/* Tags */}
               <FormControl fullWidth>
                 <InputLabel id="tags-label">Tags</InputLabel>
                 <Select
@@ -217,6 +238,8 @@ const ArticleFormDialog: React.FC<ArticleFormDialogProps> = ({
                   ))}
                 </Select>
               </FormControl>
+
+              {/* Platform */}
               <Box ref={platformRef}>
                 <FormControl fullWidth>
                   <InputLabel id="platform-label">Platform</InputLabel>
@@ -226,9 +249,7 @@ const ArticleFormDialog: React.FC<ArticleFormDialogProps> = ({
                     label="Platform"
                     onChange={(e) => {
                       const newPlatform = e.target.value;
-
                       if (!platformOptions.includes(newPlatform)) return;
-
                       const validSegments =
                         platformSegmentMap[newPlatform] || [];
                       const currentSegment = form.segment || "";
@@ -250,6 +271,7 @@ const ArticleFormDialog: React.FC<ArticleFormDialogProps> = ({
                 </FormControl>
               </Box>
 
+              {/* Segment */}
               {form.platform && filteredSegmentOptions.length > 0 && (
                 <FormControl fullWidth>
                   <InputLabel id="segment-label">Segment</InputLabel>
@@ -269,6 +291,7 @@ const ArticleFormDialog: React.FC<ArticleFormDialogProps> = ({
                 </FormControl>
               )}
 
+              {/* Solution */}
               <Box ref={solutionRef}>
                 <RichTextEditor
                   key={`sol-${form.id}`}
@@ -286,7 +309,14 @@ const ArticleFormDialog: React.FC<ArticleFormDialogProps> = ({
             </Stack>
           </DialogContent>
 
-          <DialogActions>
+          <DialogActions
+            sx={{
+              px: 3,
+              py: 2,
+              borderTop: "1px solid",
+              borderColor: "divider",
+              backgroundColor: "background.paper",
+            }}>
             <Button
               variant="outlined"
               color="inherit"
