@@ -129,37 +129,71 @@ const ArticleFormDialog: React.FC<ArticleFormDialogProps> = ({
       fullScreen
       aria-labelledby="article-form-dialog-title"
       PaperProps={{
-        sx: { bgcolor: "background.default" },
-      }}>
-      <DialogTitle
-        id="article-form-dialog-title"
+        sx: {
+          bgcolor: "background.default",
+          borderRadius: 0,
+        },
+      }}
+    >
+      {/* Title Bar */}
+      <Box
         sx={{
-          fontWeight: 600,
-          fontSize: "1.5rem",
+          p: 3,
           bgcolor: "background.paper",
           borderBottom: "1px solid",
           borderColor: "divider",
-        }}>
-        {dialogTitle}
-      </DialogTitle>
-
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
+        <DialogTitle
+          id="article-form-dialog-title"
+          sx={{ m: 0, p: 0, fontSize: "1.5rem", fontWeight: 700 }}
+        >
+          {isExistingArticle ? "Edit Article" : "Create New Article"}
+        </DialogTitle>
+        <Button
+          onClick={onClose}
+          startIcon={<CancelIcon />}
+          color="inherit"
+          sx={{ textTransform: "none" }}
+        >
+          Cancel
+        </Button>
+      </Box>
+  
+      {/* Loading */}
       {loadingTags ? (
         <Box
           display="flex"
           justifyContent="center"
           alignItems="center"
-          height="60vh">
+          height="60vh"
+        >
           <CircularProgress />
         </Box>
       ) : (
         <>
+          {/* Form Body */}
           <DialogContent
             onKeyDown={onKeyDown}
             sx={{
-              p: { xs: 2, sm: 3 },
-              bgcolor: "background.default",
-            }}>
-            <Stack spacing={3}>
+              p: { xs: 2, md: 4 },
+              backgroundColor: "background.default",
+            }}
+          >
+            <Stack
+              spacing={4}
+              sx={{
+                maxWidth: "800px",
+                mx: "auto",
+                backgroundColor: "background.paper",
+                borderRadius: 3,
+                boxShadow: 3,
+                p: { xs: 2, md: 4 },
+              }}
+            >
               {tagLoadError && (
                 <Alert
                   severity="error"
@@ -178,15 +212,17 @@ const ArticleFormDialog: React.FC<ArticleFormDialogProps> = ({
                             setTagLoadError(true);
                           })
                           .finally(() => setLoadingTags(false));
-                      }}>
+                      }}
+                    >
                       Retry
                     </Button>
-                  }>
+                  }
+                >
                   Failed to load tags. Saving is disabled until the issue is
                   resolved.
                 </Alert>
               )}
-
+  
               {/* Title */}
               <TextField
                 inputRef={titleRef}
@@ -199,7 +235,7 @@ const ArticleFormDialog: React.FC<ArticleFormDialogProps> = ({
                 error={validationErrors.title}
                 helperText={validationErrors.title ? "Title is required" : ""}
               />
-
+  
               {/* Description */}
               <Box ref={descriptionRef}>
                 <RichTextEditor
@@ -215,7 +251,7 @@ const ArticleFormDialog: React.FC<ArticleFormDialogProps> = ({
                   </Alert>
                 )}
               </Box>
-
+  
               {/* Tags */}
               <FormControl fullWidth>
                 <InputLabel id="tags-label">Tags</InputLabel>
@@ -232,7 +268,8 @@ const ArticleFormDialog: React.FC<ArticleFormDialogProps> = ({
                         return <Chip key={id} label={tag?.name || id} />;
                       })}
                     </Box>
-                  )}>
+                  )}
+                >
                   {availableTags.map((tag) => (
                     <MenuItem key={tag.id} value={tag.id}>
                       {tag.name}
@@ -240,7 +277,7 @@ const ArticleFormDialog: React.FC<ArticleFormDialogProps> = ({
                   ))}
                 </Select>
               </FormControl>
-
+  
               {/* Platform */}
               <Box ref={platformRef}>
                 <FormControl fullWidth>
@@ -252,10 +289,9 @@ const ArticleFormDialog: React.FC<ArticleFormDialogProps> = ({
                     onChange={(e) => {
                       const newPlatform = e.target.value;
                       if (!platformOptions.includes(newPlatform)) return;
-                      const validSegments =
-                        platformSegmentMap[newPlatform] || [];
+                      const validSegments = platformSegmentMap[newPlatform] || [];
                       const currentSegment = form.segment || "";
-
+  
                       onChange({
                         ...form,
                         platform: newPlatform,
@@ -263,7 +299,8 @@ const ArticleFormDialog: React.FC<ArticleFormDialogProps> = ({
                           ? currentSegment
                           : "",
                       });
-                    }}>
+                    }}
+                  >
                     {platformOptions.map((p) => (
                       <MenuItem key={p} value={p}>
                         {p}
@@ -272,7 +309,7 @@ const ArticleFormDialog: React.FC<ArticleFormDialogProps> = ({
                   </Select>
                 </FormControl>
               </Box>
-
+  
               {/* Segment */}
               {form.platform && filteredSegmentOptions.length > 0 && (
                 <FormControl fullWidth>
@@ -283,7 +320,8 @@ const ArticleFormDialog: React.FC<ArticleFormDialogProps> = ({
                     label="Segment"
                     onChange={(e) =>
                       onChange({ ...form, segment: e.target.value })
-                    }>
+                    }
+                  >
                     {filteredSegmentOptions.map((s) => (
                       <MenuItem key={s} value={s}>
                         {s}
@@ -292,7 +330,7 @@ const ArticleFormDialog: React.FC<ArticleFormDialogProps> = ({
                   </Select>
                 </FormControl>
               )}
-
+  
               {/* Solution */}
               <Box ref={solutionRef}>
                 <RichTextEditor
@@ -310,40 +348,45 @@ const ArticleFormDialog: React.FC<ArticleFormDialogProps> = ({
               </Box>
             </Stack>
           </DialogContent>
+  
+          {/* Footer Actions */}
           <DialogActions
             sx={{
-              px: 3,
-              py: 2,
+              px: 4,
+              py: 3,
               borderTop: "1px solid",
               borderColor: "divider",
               backgroundColor: "background.paper",
-              justifyContent: "space-between",
-            }}>
+              justifyContent: "flex-end",
+            }}
+          >
             <Button
-              variant="text"
+              variant="outlined"
               color="secondary"
               onClick={onClose}
               startIcon={<CancelIcon />}
-              aria-label="Cancel article creation">
+              sx={{ mr: 2 }}
+            >
               Cancel
             </Button>
-
+  
             <Button
               variant="contained"
               color="primary"
               onClick={handleValidationAndSubmit}
               startIcon={<SaveIcon />}
-              aria-label="Save article"
               disabled={tagLoadError || availableTags.length === 0}
               sx={{
                 fontWeight: 600,
                 px: 3,
+                borderRadius: "8px",
                 boxShadow: 2,
                 "&:disabled": {
                   backgroundColor: "action.disabledBackground",
                   color: "text.disabled",
                 },
-              }}>
+              }}
+            >
               Save Article
             </Button>
           </DialogActions>
@@ -351,6 +394,7 @@ const ArticleFormDialog: React.FC<ArticleFormDialogProps> = ({
       )}
     </Dialog>
   );
+  
 };
 
 export default ArticleFormDialog;
