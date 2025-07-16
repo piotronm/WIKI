@@ -14,7 +14,7 @@ import {
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import { useTags } from "../context/TagsContext";
-import { platformOptions } from "../config/platformSegmentMap";
+import { useArticles } from "../context/ArticlesContext";
 
 type FiltersProps = {
   activeTags: string[];
@@ -38,6 +38,7 @@ const Filters = ({
   const [filtersVisible, setFiltersVisible] = useState(false);
   const dropdownRef = useRef<HTMLDivElement | null>(null);
   const { tags } = useTags();
+  const { articles } = useArticles();
 
   const handleTagClick = (tag: string) => {
     const updatedTags = activeTags.includes(tag)
@@ -131,22 +132,24 @@ const Filters = ({
                 );
               })}
             </Box>
-            {/* Platform Selector */}
-            <FormControl size="small" fullWidth>
-              <InputLabel id="platform-select-label">Platform</InputLabel>
-              <Select
-                labelId="platform-select-label"
-                value={activePlatform}
-                onChange={(e) => setActivePlatform(e.target.value)}
-                label="Platform">
-                <MenuItem value="">All Platforms</MenuItem>
-                {platformOptions.map((platform) => (
-                  <MenuItem key={platform} value={platform}>
-                    {platform}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
+            {/* Platform Chips */}
+<Box display="flex" flexWrap="wrap" gap={1}>
+  {Array.from(new Set(articles.map((a) => a.platform).filter(Boolean)))
+    .sort()
+    .map((platform) => (
+      <Chip
+        key={platform}
+        label={platform}
+        color={activePlatform === platform ? "primary" : "default"}
+        onClick={() =>
+          setActivePlatform(
+            activePlatform === platform ? "" : platform
+          )
+        }
+        clickable
+      />
+    ))}
+</Box>
 
             {/* Reset Button */}
             <Box display="flex" justifyContent="flex-end">
