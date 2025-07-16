@@ -24,6 +24,8 @@ import {
   platformSegmentMap,
   platformOptions,
 } from "../config/platformSegmentMap";
+import CancelIcon from "@mui/icons-material/Close";
+import SaveIcon from "@mui/icons-material/Save";
 
 type Tag = {
   id: string;
@@ -308,7 +310,6 @@ const ArticleFormDialog: React.FC<ArticleFormDialogProps> = ({
               </Box>
             </Stack>
           </DialogContent>
-
           <DialogActions
             sx={{
               px: 3,
@@ -316,20 +317,33 @@ const ArticleFormDialog: React.FC<ArticleFormDialogProps> = ({
               borderTop: "1px solid",
               borderColor: "divider",
               backgroundColor: "background.paper",
+              justifyContent: "space-between",
             }}>
             <Button
-              variant="outlined"
-              color="inherit"
+              variant="text"
+              color="secondary"
               onClick={onClose}
+              startIcon={<CancelIcon />}
               aria-label="Cancel article creation">
               Cancel
             </Button>
+
             <Button
               variant="contained"
-              color="success"
+              color="primary"
               onClick={handleValidationAndSubmit}
+              startIcon={<SaveIcon />}
               aria-label="Save article"
-              disabled={tagLoadError || availableTags.length === 0}>
+              disabled={tagLoadError || availableTags.length === 0}
+              sx={{
+                fontWeight: 600,
+                px: 3,
+                boxShadow: 2,
+                "&:disabled": {
+                  backgroundColor: "action.disabledBackground",
+                  color: "text.disabled",
+                },
+              }}>
               Save Article
             </Button>
           </DialogActions>
