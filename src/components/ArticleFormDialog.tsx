@@ -95,7 +95,6 @@ const ArticleFormDialog: React.FC<ArticleFormDialogProps> = ({
   };
 
   const isExistingArticle = Boolean(form?.id?.trim());
-  const dialogTitle = isExistingArticle ? "Edit Article" : "New Article";
   const filteredSegmentOptions = platformSegmentMap[form.platform || ""] || [];
 
   const handleValidationAndSubmit = () => {
