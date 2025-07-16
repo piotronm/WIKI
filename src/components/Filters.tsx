@@ -10,6 +10,7 @@ import {
   IconButton,
   Stack,
   Button,
+  Typography,
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
@@ -74,29 +75,32 @@ const Filters = ({
         display="flex"
         justifyContent="space-between"
         alignItems="center"
-        mb={1}>
-        <Box>
+        mb={1}
+      >
+        <Box display="flex" alignItems="center" gap={1}>
           <IconButton
             onClick={() => setFiltersVisible((prev) => !prev)}
-            size="small">
+            size="small"
+          >
             {filtersVisible ? <ExpandLessIcon /> : <ExpandMoreIcon />}
           </IconButton>
           <span style={{ fontWeight: 600, fontSize: "1rem" }}>Filters</span>
         </Box>
-
+  
         <FormControl size="small">
           <InputLabel id="sort-select-label">Sort By</InputLabel>
           <Select
             labelId="sort-select-label"
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value as "newest" | "oldest")}
-            label="Sort By">
+            label="Sort By"
+          >
             <MenuItem value="newest">Newest First</MenuItem>
             <MenuItem value="oldest">Oldest First</MenuItem>
           </Select>
         </FormControl>
       </Box>
-
+  
       {filtersVisible && (
         <Box
           ref={dropdownRef}
@@ -107,56 +111,83 @@ const Filters = ({
           zIndex={10}
           sx={{
             backdropFilter: "blur(4px)",
-            backgroundColor: "rgba(255, 255, 255, 0.9)",
+            backgroundColor: "rgba(255, 255, 255, 0.95)",
             border: "1px solid #ddd",
-            borderRadius: 1,
+            borderRadius: 2,
             boxShadow: 4,
             p: 2,
             mt: 1,
-          }}>
-          <Stack spacing={2}>
-            {/* Tags */}
-            <Box display="flex" flexWrap="wrap" gap={1}>
-              {tags.map((tag) => {
-                if (!tag.id) console.warn("Missing tag ID", tag);
-                return (
-                  <Chip
-                    key={tag.id}
-                    label={tag.name}
-                    color={
-                      activeTags.includes(tag.name) ? "primary" : "default"
-                    }
-                    onClick={() => handleTagClick(tag.name)}
-                    clickable
-                  />
-                );
-              })}
+          }}
+        >
+          <Stack spacing={3}>
+            {/* Tags Section */}
+            <Box>
+              <Typography
+                variant="subtitle2"
+                fontWeight="bold"
+                gutterBottom
+                color="text.secondary"
+              >
+                Tags
+              </Typography>
+              <Box display="flex" flexWrap="wrap" gap={1}>
+                {tags.map((tag) => {
+                  if (!tag.id) console.warn("Missing tag ID", tag);
+                  return (
+                    <Chip
+                      key={tag.id}
+                      label={tag.name}
+                      color={
+                        activeTags.includes(tag.name) ? "primary" : "default"
+                      }
+                      onClick={() => handleTagClick(tag.name)}
+                      clickable
+                    />
+                  );
+                })}
+              </Box>
             </Box>
-            {/* Platform Chips */}
-<Box display="flex" flexWrap="wrap" gap={1}>
-  {Array.from(new Set(articles.map((a) => a.platform).filter(Boolean)))
-    .sort()
-    .map((platform) => (
-      <Chip
-        key={platform}
-        label={platform}
-        color={activePlatform === platform ? "primary" : "default"}
-        onClick={() =>
-          setActivePlatform(
-            activePlatform === platform ? "" : platform
-          )
-        }
-        clickable
-      />
-    ))}
-</Box>
-
+  
+            {/* Platform Section */}
+            <Box>
+              <Typography
+                variant="subtitle2"
+                fontWeight="bold"
+                gutterBottom
+                color="text.secondary"
+              >
+                Platform
+              </Typography>
+              <Box display="flex" flexWrap="wrap" gap={1}>
+                {Array.from(
+                  new Set(articles.map((a) => a.platform).filter(Boolean))
+                )
+                  .sort()
+                  .map((platform) => (
+                    <Chip
+                      key={platform}
+                      label={platform}
+                      color={
+                        activePlatform === platform ? "primary" : "default"
+                      }
+                      onClick={() =>
+                        setActivePlatform(
+                          activePlatform === platform ? "" : platform
+                        )
+                      }
+                      clickable
+                    />
+                  ))}
+              </Box>
+            </Box>
+  
             {/* Reset Button */}
             <Box display="flex" justifyContent="flex-end">
               <Button
                 variant="outlined"
                 color="secondary"
-                onClick={onResetFilters}>
+                onClick={onResetFilters}
+              >
                 Reset Filters
               </Button>
             </Box>
@@ -165,6 +196,7 @@ const Filters = ({
       )}
     </Box>
   );
+  
 };
 
 export default Filters;
