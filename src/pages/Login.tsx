@@ -24,13 +24,14 @@ export default function Login() {
     e.preventDefault();
     setErrorMsg(null);
     setLoading(true);
-  
+
     try {
-      await api.post("/User", {
-        username,
-        password,
-      });
-  
+      await api.post(
+        `/User?username=${encodeURIComponent(
+          username
+        )}&password=${encodeURIComponent(password)}`
+      );
+
       login("session-ok", "admin");
       navigate("/admin");
     } catch (err: any) {
@@ -44,8 +45,6 @@ export default function Login() {
       setLoading(false);
     }
   };
-  
-  
 
   return (
     <Box maxWidth="sm" mx="auto" mt={8}>
@@ -90,8 +89,7 @@ export default function Login() {
             variant="contained"
             color="primary"
             sx={{ mt: 3 }}
-            disabled={loading}
-          >
+            disabled={loading}>
             {loading ? <CircularProgress size={24} /> : "Login"}
           </Button>
         </form>
