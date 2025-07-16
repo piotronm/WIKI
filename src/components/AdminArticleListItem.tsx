@@ -157,6 +157,24 @@ const AdminArticleListItem: React.FC<AdminArticleListItemProps> = ({
         <Stack direction="row" spacing={1} mt={1}>
           {getBadges()}
         </Stack>
+        <Stack direction="row" spacing={1} mt={1}>
+          {article.platform && (
+            <Chip
+              label={`Platform: ${article.platform}`}
+              size="small"
+              color="info"
+              variant="outlined"
+            />
+          )}
+          {article.segment && (
+            <Chip
+              label={`Segment: ${article.segment}`}
+              size="small"
+              color="default"
+              variant="outlined"
+            />
+          )}
+        </Stack>
       </Box>
 
       <Box display="flex" flexDirection="column" gap={1}>
