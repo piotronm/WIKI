@@ -48,6 +48,7 @@ export default function AdminPanel() {
   const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [articleToDelete, setArticleToDelete] = useState<Article | null>(null);
+  const [activePlatform, setActivePlatform] = useState<string>("");
 
   const fuse = useMemo(
     () =>
@@ -134,24 +135,36 @@ export default function AdminPanel() {
       debouncedQuery.trim().length >= 2
         ? fuseResults.map((r) => r.item)
         : articles;
-  
+
     const selectedTagIds = tags
       .filter((t) => activeTags.includes(t.name))
       .map((t) => t.id);
-  
+
     return baseArticles
-      .filter(
-        (article) =>
+      .filter((article) => {
+        const tagMatch =
           selectedTagIds.length === 0 ||
-          article.tags.some((tagId) => selectedTagIds.includes(tagId))
-      )
+          article.tags.some((tagId) => selectedTagIds.includes(tagId));
+
+        const platformMatch =
+          !activePlatform || article.platform === activePlatform;
+
+        return tagMatch && platformMatch;
+      })
       .sort((a, b) => {
         const aTime = new Date(a.dateCreated ?? 0).getTime();
         const bTime = new Date(b.dateCreated ?? 0).getTime();
         return sortBy === "newest" ? bTime - aTime : aTime - bTime;
       });
-  }, [articles, fuseResults, debouncedQuery, activeTags, sortBy, tags]);
-  
+  }, [
+    articles,
+    fuseResults,
+    debouncedQuery,
+    activeTags,
+    activePlatform,
+    sortBy,
+    tags,
+  ]);
 
   const paginatedArticles = filteredArticles.slice(0, page * pageSize);
 
@@ -256,10 +269,13 @@ export default function AdminPanel() {
         <Filters
           activeTags={activeTags}
           setActiveTags={setActiveTags}
+          activePlatform={activePlatform}
+          setActivePlatform={setActivePlatform}
           sortBy={sortBy}
           setSortBy={setSortBy}
           onResetFilters={() => {
             setActiveTags([]);
+            setActivePlatform("");
             setSortBy("newest");
             setQuery("");
           }}
