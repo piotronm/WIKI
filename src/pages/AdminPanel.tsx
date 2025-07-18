@@ -229,43 +229,50 @@ export default function AdminPanel() {
   return (
     <Stack
       direction={{ xs: "column", md: "row" }}
-      sx={{ minHeight: "100vh", width: "100%", bgcolor: "#f9fafc" }}>
-      {/* Sticky Sidebar */}
+      sx={{ minHeight: "100vh", width: "100%", bgcolor: "background.default" }}
+    >
+      {/* Sidebar */}
       <Box
         sx={{
           width: { xs: "100%", md: 320, lg: 360 },
           flexShrink: 0,
-          borderRight: { md: "1px solid #e0e0e0" },
-          backgroundColor: "#ffffff",
+          bgcolor: "background.paper",
+          borderRight: { md: "1px solid", borderColor: "divider" },
           position: { md: "sticky" },
           top: 0,
           height: { md: "100vh" },
           overflowY: { md: "auto" },
-          px: { xs: 2, md: 3 },
+          px: { xs: 1.5, md: 3 },
           py: 4,
-        }}>
-        <Typography variant="h5" gutterBottom>
+        }}
+      >
+        <Typography variant="h5" fontWeight={700} gutterBottom>
           Manage Articles
         </Typography>
-
-        <Button
-          variant="contained"
-          color="primary"
-          fullWidth
-          onClick={handleNewArticle}
-          sx={{ mb: 1 }}>
-          + Add New Article
-        </Button>
-
-        <Button
-          variant="outlined"
-          fullWidth
-          onClick={handleExport}
-          disabled={!!form}
-          sx={{ mb: 3 }}>
-          Export Articles
-        </Button>
-
+  
+        <Stack spacing={1.5} mb={3}>
+          <Button
+            variant="contained"
+            color="primary"
+            fullWidth
+            onClick={handleNewArticle}
+          >
+            + Add New Article
+          </Button>
+          <Button
+            variant="outlined"
+            fullWidth
+            onClick={handleExport}
+            disabled={!!form}
+          >
+            Export Articles
+          </Button>
+        </Stack>
+  
+        <Typography variant="subtitle2" color="text.secondary" gutterBottom>
+          Filters
+        </Typography>
+  
         <Filters
           activeTags={activeTags}
           setActiveTags={setActiveTags}
@@ -281,25 +288,29 @@ export default function AdminPanel() {
           }}
         />
       </Box>
-
-      {/* Main Content */}
+  
+      {/* Main Panel */}
       <Box
         sx={{
           flexGrow: 1,
-          px: { xs: 2, md: 4 },
+          px: { xs: 1.5, md: 4 },
           py: 4,
           maxWidth: "100%",
-        }}>
-        {/* Sticky Header */}
+        }}
+      >
+        {/* Sticky Search Header */}
         <Box
           sx={{
             position: "sticky",
             top: 0,
             zIndex: 10,
-            backgroundColor: "#f9fafc",
+            backgroundColor: "background.default",
             pb: 2,
-            boxShadow: "0 2px 4px rgba(0,0,0,0.05)",
-          }}>
+            backdropFilter: "blur(8px)",
+            borderBottom: "1px solid",
+            borderColor: "divider",
+          }}
+        >
           <SearchBar
             query={query}
             setQuery={setQuery}
@@ -308,73 +319,84 @@ export default function AdminPanel() {
             suggestions={fuseResults.slice(0, 5).map((r) => r.item.title)}
             onSelectSuggestion={(val) => setQuery(val)}
           />
-
+  
           <Typography variant="body2" color="text.secondary" mt={1}>
-            Showing {paginatedArticles.length} of {filteredArticles.length}{" "}
-            articles
+            Showing {paginatedArticles.length} of {filteredArticles.length} articles
           </Typography>
-
+  
           {error && (
             <Alert severity="error" sx={{ mt: 2 }}>
               {error}
             </Alert>
           )}
-
+  
           {(loading || submitting) && (
             <Box mt={2} textAlign="center">
               <CircularProgress />
             </Box>
           )}
         </Box>
-
-        {/* Articles List */}
+  
+        {/* Articles List Container */}
         <Paper
           elevation={2}
           sx={{
             mt: 4,
             opacity: form ? 0.3 : 1,
             pointerEvents: form ? "none" : "auto",
-          }}>
-          <List>
-            {paginatedArticles.map((a) => (
-              <AdminArticleListItem
-                key={a.id}
-                article={a}
-                tagNames={getTagNames(a.tags)}
-                onEdit={handleEdit}
-                onDelete={handleDelete}
-                isExpanded={expandedArticleId === a.id}
-                toggleExpanded={() =>
-                  setExpandedArticleId((prev) => (prev === a.id ? null : a.id))
-                }
-              />
+            borderRadius: 3,
+            p: 1,
+          }}
+        >
+          <List disablePadding>
+            {paginatedArticles.map((a, index) => (
+              <Box key={a.id}>
+                <AdminArticleListItem
+                  article={a}
+                  tagNames={getTagNames(a.tags)}
+                  onEdit={handleEdit}
+                  onDelete={handleDelete}
+                  isExpanded={expandedArticleId === a.id}
+                  toggleExpanded={() =>
+                    setExpandedArticleId((prev) => (prev === a.id ? null : a.id))
+                  }
+                />
+                {index !== paginatedArticles.length - 1 && (
+                  <Box
+                    sx={{
+                      my: 1,
+                      borderBottom: "1px solid",
+                      borderColor: "divider",
+                    }}
+                  />
+                )}
+              </Box>
             ))}
           </List>
         </Paper>
-
+  
         {filteredArticles.length === 0 && (
           <Box mt={2}>
-            <Alert severity="info">
-              No articles match your search or filters.
-            </Alert>
+            <Alert severity="info">No articles match your search or filters.</Alert>
           </Box>
         )}
-
+  
         {filteredArticles.length > paginatedArticles.length && (
           <Box textAlign="center" mt={2}>
             <Button
               variant="outlined"
               onClick={() => setPage((prev) => prev + 1)}
-              disabled={!!form}>
+              disabled={!!form}
+            >
               Load More
             </Button>
           </Box>
         )}
-
+  
         <Footer />
       </Box>
-
-      {/* Dialogs & Snackbar */}
+  
+      {/* Dialogs */}
       {form && (
         <ArticleFormDialog
           key={form?.id ? `edit-${form.id}` : "new"}
@@ -385,10 +407,13 @@ export default function AdminPanel() {
           onKeyDown={handleKeyDown}
         />
       )}
-
+  
       <Dialog
         open={deleteDialogOpen}
-        onClose={() => setDeleteDialogOpen(false)}>
+        onClose={() => setDeleteDialogOpen(false)}
+        fullWidth
+        maxWidth="sm"
+      >
         <DialogTitle>Confirm Delete</DialogTitle>
         <DialogContent>
           Are you sure you want to delete "{articleToDelete?.title}"?
@@ -400,42 +425,47 @@ export default function AdminPanel() {
           </Button>
         </DialogActions>
       </Dialog>
-
+  
       <Dialog
         open={cancelDialogOpen}
-        onClose={() => setCancelDialogOpen(false)}>
+        onClose={() => setCancelDialogOpen(false)}
+        fullWidth
+        maxWidth="sm"
+      >
         <DialogTitle>Discard Changes?</DialogTitle>
         <DialogContent>
           Are you sure you want to discard the changes you made?
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setCancelDialogOpen(false)}>
-            Keep Editing
-          </Button>
+          <Button onClick={() => setCancelDialogOpen(false)}>Keep Editing</Button>
           <Button
             color="error"
             variant="contained"
             onClick={() => {
               setForm(null);
               setCancelDialogOpen(false);
-            }}>
+            }}
+          >
             Discard
           </Button>
         </DialogActions>
       </Dialog>
-
+  
       <Snackbar
         open={showSnackbar}
         autoHideDuration={4000}
         onClose={() => setShowSnackbar(false)}
-        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}>
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+      >
         <MuiAlert
           severity={snackbarSeverity}
           onClose={() => setShowSnackbar(false)}
-          sx={{ width: "100%" }}>
+          sx={{ width: "100%" }}
+        >
           {snackbarMessage}
         </MuiAlert>
       </Snackbar>
     </Stack>
   );
+  
 }
