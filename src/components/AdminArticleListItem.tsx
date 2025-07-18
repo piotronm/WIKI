@@ -1,6 +1,5 @@
 import { Link } from "react-router-dom";
 import {
-  Box,
   Typography,
   Stack,
   Chip,
@@ -12,6 +11,7 @@ import {
   Collapse,
   Fade,
   IconButton,
+  Paper,
 } from "@mui/material";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import EditIcon from "@mui/icons-material/Edit";
@@ -89,121 +89,135 @@ const AdminArticleListItem: React.FC<AdminArticleListItemProps> = ({
   };
 
   return (
-    <ListItem
-      divider
-      sx={{
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "flex-start",
-        flexWrap: "wrap",
-        gap: 2,
-        "&:hover": {
-          backgroundColor: theme.palette.action.hover,
-        },
-        transition: "background-color 0.2s ease-in-out",
-      }}>
-      <Box flex={1} minWidth={250}>
-        <Box display="flex" alignItems="center" justifyContent="space-between">
-          <Typography
-            variant="subtitle1"
-            fontWeight={600}
-            sx={{ wordBreak: "break-word" }}>
-            {article.title}
-          </Typography>
-          <Tooltip
-            title={isExpanded ? "Collapse description" : "Expand description"}>
-            <IconButton
-              size="small"
-              onClick={() => toggleExpanded(article.id)}
-              sx={{
-                ml: 1,
-                border: `1px solid ${theme.palette.divider}`,
-                borderRadius: "8px",
-                backgroundColor: isExpanded
-                  ? theme.palette.action.selected
-                  : "transparent",
-                transition: "background-color 0.2s",
-              }}
-              aria-label="Toggle description">
-              {isExpanded ? <ExpandLessIcon /> : <MoreHorizIcon />}
-            </IconButton>
-          </Tooltip>
-        </Box>
-
-        <Fade in={isExpanded} timeout={300}>
-          <Collapse in={isExpanded}>
+    <ListItem disableGutters>
+      <Paper
+        elevation={2}
+        sx={{
+          width: "100%",
+          p: 2.5,
+          borderRadius: 3,
+          transition: "0.3s ease",
+          "&:hover": {
+            backgroundColor: theme.palette.action.hover,
+          },
+        }}
+      >
+        <Stack spacing={2}>
+          {/* Title & Expand */}
+          <Stack direction="row" justifyContent="space-between" alignItems="center">
             <Typography
-              variant="body2"
-              color="text.secondary"
-              mt={1}
-              sx={{ whiteSpace: "pre-wrap" }}>
-              {stripHtml(article.description)}
+              variant="h6"
+              fontWeight={600}
+              sx={{ color: "text.primary", wordBreak: "break-word" }}
+            >
+              {article.title}
             </Typography>
-          </Collapse>
-        </Fade>
 
-        <Stack direction="row" spacing={1} flexWrap="wrap" mt={1}>
-          {tagNames.length > 0 ? (
-            tagNames.map((name) => (
-              <Chip key={name} label={name} size="small" />
-            ))
-          ) : (
-            <Typography variant="body2" color="text.secondary">
-              No tags
-            </Typography>
-          )}
-        </Stack>
+            <Tooltip title={isExpanded ? "Collapse description" : "Expand description"}>
+              <IconButton
+                onClick={() => toggleExpanded(article.id)}
+                size="small"
+                sx={{
+                  border: `1px solid ${theme.palette.divider}`,
+                  borderRadius: 2,
+                  backgroundColor: isExpanded
+                    ? theme.palette.action.selected
+                    : "transparent",
+                }}
+              >
+                {isExpanded ? <ExpandLessIcon /> : <MoreHorizIcon />}
+              </IconButton>
+            </Tooltip>
+          </Stack>
 
-        <Stack direction="row" spacing={1} mt={1}>
-          {getBadges()}
-        </Stack>
-        <Stack direction="row" spacing={1} mt={1}>
-          {article.platform && (
-            <Chip
-              label={`Platform: ${article.platform}`}
-              size="small"
-              color="info"
+          {/* Description */}
+          <Fade in={isExpanded} timeout={300}>
+            <Collapse in={isExpanded}>
+              <Typography variant="body2" color="text.secondary" sx={{ whiteSpace: "pre-wrap", mt: 1 }}>
+                {stripHtml(article.description)}
+              </Typography>
+            </Collapse>
+          </Fade>
+
+          {/* Tags */}
+          <Stack direction="row" spacing={1} flexWrap="wrap">
+            {tagNames.length > 0 ? (
+              tagNames.map((name) => (
+                <Chip key={name} label={name} size="small" color="secondary" />
+              ))
+            ) : (
+              <Typography variant="body2" color="text.disabled" fontStyle="italic">
+                No tags
+              </Typography>
+            )}
+          </Stack>
+
+          {/* Badges */}
+          <Stack direction="row" spacing={1}>
+            {getBadges()}
+          </Stack>
+
+          {/* Platform / Segment */}
+          <Stack direction="row" spacing={1} flexWrap="wrap">
+            {article.platform && (
+              <Chip
+                label={`Platform: ${article.platform}`}
+                size="small"
+                color="info"
+                variant="outlined"
+              />
+            )}
+            {article.segment && (
+              <Chip
+                label={`Segment: ${article.segment}`}
+                size="small"
+                color="default"
+                variant="outlined"
+              />
+            )}
+          </Stack>
+
+          {/* Admin Controls */}
+          <Stack
+            direction={{ xs: "column", sm: "row" }}
+            spacing={1}
+            justifyContent="flex-end"
+            alignItems="flex-start"
+          >
+            <Button
+              component={Link}
+              to={`/article/${article.id}`}
               variant="outlined"
-            />
-          )}
-          {article.segment && (
-            <Chip
-              label={`Segment: ${article.segment}`}
               size="small"
-              color="default"
+              color="primary"
+              startIcon={<VisibilityIcon />}
+              fullWidth={isSmallScreen}
+            >
+              View
+            </Button>
+            <Button
               variant="outlined"
-            />
-          )}
+              size="small"
+              color="secondary"
+              startIcon={<EditIcon />}
+              onClick={() => onEdit(article)}
+              fullWidth={isSmallScreen}
+            >
+              Edit
+            </Button>
+            <Button
+              variant="contained"
+              color="error"
+              size="small"
+              startIcon={<DeleteIcon />}
+              onClick={() => onDelete(article.id)}
+              fullWidth={isSmallScreen}
+            >
+              Delete
+            </Button>
+          </Stack>
         </Stack>
-      </Box>
-
-      <Box display="flex" flexDirection="column" gap={1}>
-        <Button
-          component={Link}
-          to={`/article/${article.id}`}
-          variant="outlined"
-          size="small"
-          color="primary"
-          startIcon={<VisibilityIcon />}>
-          View
-        </Button>
-        <Button
-          variant="outlined"
-          size="small"
-          color="secondary"
-          startIcon={<EditIcon />}
-          onClick={() => onEdit(article)}>
-          Edit
-        </Button>
-        <Button
-          variant="contained"
-          color="error"
-          size="small"
-          startIcon={<DeleteIcon />}
-          onClick={() => onDelete(article.id)}>
-          Delete
-        </Button>
-      </Box>
+      </Paper>
     </ListItem>
   );
 };
