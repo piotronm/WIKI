@@ -12,8 +12,9 @@ import {
 } from "@mui/material";
 
 type Props = {
-  article: Article;
+  readonly article: Article;
 };
+
 
 export default function ArticleCard({ article }: Props) {
   const { id, title, platform, category, description } = article;
