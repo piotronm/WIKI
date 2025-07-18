@@ -8,6 +8,7 @@ import {
   Box,
   Stack,
   useTheme,
+  Divider,
 } from "@mui/material";
 
 type Props = {
@@ -24,41 +25,61 @@ export default function ArticleCard({ article }: Props) {
       to={`/article/${id}`}
       elevation={3}
       sx={{
-        p: 2,
-        borderRadius: 3, 
+        display: "flex",
+        flexDirection: "row",
         textDecoration: "none",
-        backgroundColor: theme.palette.background.default,
+        borderRadius: 3,
+        overflow: "hidden",
+        backgroundColor: theme.palette.background.paper,
         color: theme.palette.text.primary,
-        transition: "background-color 0.2s ease",
+        transition: "transform 0.2s ease, box-shadow 0.2s ease",
         "&:hover": {
-          backgroundColor: theme.palette.primary.main,
+          transform: "translateY(-2px)",
+          boxShadow: theme.shadows[4],
         },
       }}
     >
-      <Stack spacing={0.75}>
-        <Typography variant="h6" fontWeight={600} color="text.primary">
-          {title}
-        </Typography>
+      {/* Left Accent Strip */}
+      <Box
+        sx={{
+          width: 6,
+          backgroundColor: theme.palette.primary.main,
+        }}
+      />
 
-        <Typography variant="body2" color="text.secondary">
-          {category} • {platform}
-        </Typography>
+      {/* Content */}
+      <Box sx={{ p: 2, flex: 1 }}>
+        <Stack spacing={1}>
+          {/* Title */}
+          <Typography variant="h6" fontWeight="bold" color="text.primary">
+            {title}
+          </Typography>
 
-        <Box
-          sx={{
-            mt: 0.5,
-            color: "text.secondary",
-            fontSize: "0.875rem",
-            display: "-webkit-box",
-            WebkitLineClamp: 2,
-            WebkitBoxOrient: "vertical",
-            overflow: "hidden",
-          }}
-          dangerouslySetInnerHTML={{
-            __html: DOMPurify.sanitize(description),
-          }}
-        />
-      </Stack>
+          {/* Meta Info */}
+          <Typography variant="body2" color="text.secondary">
+            {category} &nbsp;|&nbsp; {platform}
+          </Typography>
+
+          <Divider />
+
+          {/* Description Preview */}
+          <Box
+            sx={{
+              color: "text.secondary",
+              fontSize: "0.95rem",
+              lineHeight: 1.4,
+              display: "-webkit-box",
+              WebkitLineClamp: 2,
+              WebkitBoxOrient: "vertical",
+              overflow: "hidden",
+              mt: 0.5,
+            }}
+            dangerouslySetInnerHTML={{
+              __html: DOMPurify.sanitize(description),
+            }}
+          />
+        </Stack>
+      </Box>
     </Paper>
   );
 }
