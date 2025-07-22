@@ -235,24 +235,6 @@ export default function AdminPanel() {
     <Stack
       direction={{ xs: "column", md: "row" }}
       sx={{ minHeight: "100vh", width: "100%", bgcolor: "background.default" }}>
-      <Tooltip title={sidebarOpen ? "Collapse Sidebar" : "Expand Sidebar"}>
-        <IconButton
-          onClick={() => setSidebarOpen(!sidebarOpen)}
-          sx={{
-            position: "absolute",
-            left: sidebarOpen ? 300 : 0,
-            top: 16,
-            zIndex: 1000,
-            backgroundColor: "background.paper",
-            border: "1px solid",
-            borderColor: "divider",
-            borderRadius: "50%",
-            boxShadow: 1,
-            transition: "left 0.3s ease",
-          }}>
-          {sidebarOpen ? <ChevronLeftIcon /> : <ChevronRightIcon />}
-        </IconButton>
-      </Tooltip>
       {/* Sidebar */}
       <Box
         sx={{
@@ -272,9 +254,39 @@ export default function AdminPanel() {
         }}>
         {sidebarOpen ? (
           <>
-            <Typography variant="h5" fontWeight={700} gutterBottom>
-              Manage Articles
-            </Typography>
+            <Box
+              display="flex"
+              alignItems="center"
+              justifyContent="space-between"
+              mb={2}>
+              <Typography variant="h5" fontWeight={700}>
+                Manage Articles
+              </Typography>
+              <Tooltip
+                title={sidebarOpen ? "Collapse Sidebar" : "Expand Sidebar"}>
+                <IconButton
+                  aria-label={
+                    sidebarOpen ? "Collapse sidebar" : "Expand sidebar"
+                  }
+                  onClick={() => setSidebarOpen(!sidebarOpen)}
+                  size="small"
+                  sx={{
+                    ml: 1,
+                    backgroundColor: "background.paper",
+                    border: "1px solid",
+                    borderColor: "divider",
+                    borderRadius: "50%",
+                    boxShadow: 1,
+                    transition: "all 0.3s ease",
+                  }}>
+                  {sidebarOpen ? (
+                    <ChevronLeftIcon fontSize="small" />
+                  ) : (
+                    <ChevronRightIcon fontSize="small" />
+                  )}
+                </IconButton>
+              </Tooltip>
+            </Box>
 
             <Stack spacing={1.5} mb={3}>
               <Button
