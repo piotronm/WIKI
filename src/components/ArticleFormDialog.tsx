@@ -351,19 +351,21 @@ const ArticleFormDialog: React.FC<ArticleFormDialogProps> = ({
               </Box>
 
               {/*Image Uploader*/}
-              <Box>
-                <Typography variant="caption" color="text.secondary">
-                  First image will be used as the primary thumbnail.
-                </Typography>
+              {/*
+                <Box>
+                  <Typography variant="caption" color="text.secondary">
+                    First image will be used as the primary thumbnail.
+                  </Typography>
 
                 <ImageUploader
                   label="Upload Article Images"
-                  maxImages={2}
-                  maxFileSizeMB={5}
-                  existingImageUrls={form.image_urls || []}
-                  onUploadComplete={handleImageUploadComplete}
+                   maxImages={2}
+                   maxFileSizeMB={5}
+                   existingImageUrls={form.image_urls || []}
+                    onUploadComplete={handleImageUploadComplete}
                 />
               </Box>
+            */}
             </Stack>
           </DialogContent>
 
