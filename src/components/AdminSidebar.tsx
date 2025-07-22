@@ -108,10 +108,6 @@ import {
               </Button>
             </Stack>
   
-            <Typography variant="subtitle2" color="text.secondary" gutterBottom>
-              Filters
-            </Typography>
-  
             <Filters
               activeTags={activeTags}
               setActiveTags={setActiveTags}
