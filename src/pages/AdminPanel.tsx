@@ -15,6 +15,9 @@ import {
   Box,
   Stack,
 } from "@mui/material";
+import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
+import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+import IconButton from "@mui/material/IconButton";
 import Footer from "../components/Footer";
 import SearchBar from "../components/SearchBar";
 import Filters from "../components/Filters";
@@ -26,6 +29,7 @@ import { useDebouncedValue } from "../utils/useDebouncedValue";
 import { createArticle, updateArticle, deleteArticle } from "../api/articles";
 import Fuse from "fuse.js";
 import type { Article } from "../types/Article";
+import Tooltip from "@mui/material/Tooltip";
 
 export default function AdminPanel() {
   const { articles, setArticles, loading, refreshArticles } = useArticles();
@@ -49,6 +53,7 @@ export default function AdminPanel() {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [articleToDelete, setArticleToDelete] = useState<Article | null>(null);
   const [activePlatform, setActivePlatform] = useState<string>("");
+  const [sidebarOpen, setSidebarOpen] = useState(true);
 
   const fuse = useMemo(
     () =>
@@ -229,66 +234,95 @@ export default function AdminPanel() {
   return (
     <Stack
       direction={{ xs: "column", md: "row" }}
-      sx={{ minHeight: "100vh", width: "100%", bgcolor: "background.default" }}
-    >
+      sx={{ minHeight: "100vh", width: "100%", bgcolor: "background.default" }}>
+      <Tooltip title={sidebarOpen ? "Collapse Sidebar" : "Expand Sidebar"}>
+        <IconButton
+          onClick={() => setSidebarOpen(!sidebarOpen)}
+          sx={{
+            position: "absolute",
+            left: sidebarOpen ? 300 : 0,
+            top: 16,
+            zIndex: 1000,
+            backgroundColor: "background.paper",
+            border: "1px solid",
+            borderColor: "divider",
+            borderRadius: "50%",
+            boxShadow: 1,
+            transition: "left 0.3s ease",
+          }}>
+          {sidebarOpen ? <ChevronLeftIcon /> : <ChevronRightIcon />}
+        </IconButton>
+      </Tooltip>
       {/* Sidebar */}
       <Box
         sx={{
-          width: { xs: "100%", md: 320, lg: 360 },
+          width: { md: sidebarOpen ? 320 : 64 },
           flexShrink: 0,
           bgcolor: "background.paper",
-          borderRight: { md: "1px solid", borderColor: "divider" },
-          position: { md: "sticky" },
+          borderRight: "1px solid",
+          borderColor: "divider",
+          position: "sticky",
           top: 0,
-          height: { md: "100vh" },
-          overflowY: { md: "auto" },
-          px: { xs: 1.5, md: 3 },
-          py: 4,
-        }}
-      >
-        <Typography variant="h5" fontWeight={700} gutterBottom>
-          Manage Articles
-        </Typography>
-  
-        <Stack spacing={1.5} mb={3}>
-          <Button
-            variant="contained"
-            color="primary"
-            fullWidth
-            onClick={handleNewArticle}
-          >
-            + Add New Article
-          </Button>
-          <Button
-            variant="outlined"
-            fullWidth
-            onClick={handleExport}
-            disabled={!!form}
-          >
-            Export Articles
-          </Button>
-        </Stack>
-  
-        <Typography variant="subtitle2" color="text.secondary" gutterBottom>
-          Filters
-        </Typography>
-  
-        <Filters
-          activeTags={activeTags}
-          setActiveTags={setActiveTags}
-          activePlatform={activePlatform}
-          setActivePlatform={setActivePlatform}
-          sortBy={sortBy}
-          setSortBy={setSortBy}
-          onResetFilters={() => {
-            setActiveTags([]);
-            setActivePlatform("");
-            setSortBy("newest");
-            setQuery("");
-          }}
-        />
+          height: "100vh",
+          overflowY: "auto",
+          transition: "width 0.3s ease",
+          px: sidebarOpen ? 3 : 1,
+          py: sidebarOpen ? 4 : 2,
+          display: { xs: "none", md: "block" },
+        }}>
+        {sidebarOpen ? (
+          <>
+            <Typography variant="h5" fontWeight={700} gutterBottom>
+              Manage Articles
+            </Typography>
+
+            <Stack spacing={1.5} mb={3}>
+              <Button
+                variant="contained"
+                color="primary"
+                fullWidth
+                onClick={handleNewArticle}>
+                + Add New Article
+              </Button>
+              <Button
+                variant="outlined"
+                fullWidth
+                onClick={handleExport}
+                disabled={!!form}>
+                Export Articles
+              </Button>
+            </Stack>
+
+            <Typography variant="subtitle2" color="text.secondary" gutterBottom>
+              Filters
+            </Typography>
+
+            <Filters
+              activeTags={activeTags}
+              setActiveTags={setActiveTags}
+              activePlatform={activePlatform}
+              setActivePlatform={setActivePlatform}
+              sortBy={sortBy}
+              setSortBy={setSortBy}
+              onResetFilters={() => {
+                setActiveTags([]);
+                setActivePlatform("");
+                setSortBy("newest");
+                setQuery("");
+              }}
+            />
+          </>
+        ) : (
+          <Box textAlign="center">
+            <Typography
+              variant="caption"
+              sx={{ writingMode: "vertical-rl", rotate: "-180deg" }}>
+              Articles
+            </Typography>
+          </Box>
+        )}
       </Box>
-  
+
       {/* Main Panel */}
       <Box
         sx={{
@@ -296,8 +330,7 @@ export default function AdminPanel() {
           px: { xs: 1.5, md: 4 },
           py: 4,
           maxWidth: "100%",
-        }}
-      >
+        }}>
         {/* Sticky Search Header */}
         <Box
           sx={{
@@ -309,8 +342,7 @@ export default function AdminPanel() {
             backdropFilter: "blur(8px)",
             borderBottom: "1px solid",
             borderColor: "divider",
-          }}
-        >
+          }}>
           <SearchBar
             query={query}
             setQuery={setQuery}
@@ -319,24 +351,25 @@ export default function AdminPanel() {
             suggestions={fuseResults.slice(0, 5).map((r) => r.item.title)}
             onSelectSuggestion={(val) => setQuery(val)}
           />
-  
+
           <Typography variant="body2" color="text.secondary" mt={1}>
-            Showing {paginatedArticles.length} of {filteredArticles.length} articles
+            Showing {paginatedArticles.length} of {filteredArticles.length}{" "}
+            articles
           </Typography>
-  
+
           {error && (
             <Alert severity="error" sx={{ mt: 2 }}>
               {error}
             </Alert>
           )}
-  
+
           {(loading || submitting) && (
             <Box mt={2} textAlign="center">
               <CircularProgress />
             </Box>
           )}
         </Box>
-  
+
         {/* Articles List Container */}
         <Paper
           elevation={2}
@@ -346,8 +379,7 @@ export default function AdminPanel() {
             pointerEvents: form ? "none" : "auto",
             borderRadius: 3,
             p: 1,
-          }}
-        >
+          }}>
           <List disablePadding>
             {paginatedArticles.map((a, index) => (
               <Box key={a.id}>
@@ -358,7 +390,9 @@ export default function AdminPanel() {
                   onDelete={handleDelete}
                   isExpanded={expandedArticleId === a.id}
                   toggleExpanded={() =>
-                    setExpandedArticleId((prev) => (prev === a.id ? null : a.id))
+                    setExpandedArticleId((prev) =>
+                      prev === a.id ? null : a.id
+                    )
                   }
                 />
                 {index !== paginatedArticles.length - 1 && (
@@ -374,28 +408,29 @@ export default function AdminPanel() {
             ))}
           </List>
         </Paper>
-  
+
         {filteredArticles.length === 0 && (
           <Box mt={2}>
-            <Alert severity="info">No articles match your search or filters.</Alert>
+            <Alert severity="info">
+              No articles match your search or filters.
+            </Alert>
           </Box>
         )}
-  
+
         {filteredArticles.length > paginatedArticles.length && (
           <Box textAlign="center" mt={2}>
             <Button
               variant="outlined"
               onClick={() => setPage((prev) => prev + 1)}
-              disabled={!!form}
-            >
+              disabled={!!form}>
               Load More
             </Button>
           </Box>
         )}
-  
+
         <Footer />
       </Box>
-  
+
       {/* Dialogs */}
       {form && (
         <ArticleFormDialog
@@ -407,13 +442,12 @@ export default function AdminPanel() {
           onKeyDown={handleKeyDown}
         />
       )}
-  
+
       <Dialog
         open={deleteDialogOpen}
         onClose={() => setDeleteDialogOpen(false)}
         fullWidth
-        maxWidth="sm"
-      >
+        maxWidth="sm">
         <DialogTitle>Confirm Delete</DialogTitle>
         <DialogContent>
           Are you sure you want to delete "{articleToDelete?.title}"?
@@ -425,47 +459,44 @@ export default function AdminPanel() {
           </Button>
         </DialogActions>
       </Dialog>
-  
+
       <Dialog
         open={cancelDialogOpen}
         onClose={() => setCancelDialogOpen(false)}
         fullWidth
-        maxWidth="sm"
-      >
+        maxWidth="sm">
         <DialogTitle>Discard Changes?</DialogTitle>
         <DialogContent>
           Are you sure you want to discard the changes you made?
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setCancelDialogOpen(false)}>Keep Editing</Button>
+          <Button onClick={() => setCancelDialogOpen(false)}>
+            Keep Editing
+          </Button>
           <Button
             color="error"
             variant="contained"
             onClick={() => {
               setForm(null);
               setCancelDialogOpen(false);
-            }}
-          >
+            }}>
             Discard
           </Button>
         </DialogActions>
       </Dialog>
-  
+
       <Snackbar
         open={showSnackbar}
         autoHideDuration={4000}
         onClose={() => setShowSnackbar(false)}
-        anchorOrigin={{ vertical: "top", horizontal: "center" }}
-      >
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}>
         <MuiAlert
           severity={snackbarSeverity}
           onClose={() => setShowSnackbar(false)}
-          sx={{ width: "100%" }}
-        >
+          sx={{ width: "100%" }}>
           {snackbarMessage}
         </MuiAlert>
       </Snackbar>
     </Stack>
   );
-  
 }
