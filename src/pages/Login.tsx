@@ -26,13 +26,19 @@ export default function Login() {
     setLoading(true);
 
     try {
+      // Call the backend to validate the credentials
       await api.post(
-        `/User?username=${encodeURIComponent(
-          username
-        )}&password=${encodeURIComponent(password)}`
+        `/User?username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`
       );
 
-      login("session-ok", "admin");
+      // Reuse the existing token (do not overwrite it with "session-ok")
+      const storedToken = localStorage.getItem("token");
+      if (!storedToken) {
+        throw new Error("Token is missing after successful login.");
+      }
+
+      // Set admin role without changing the token
+      login(storedToken, "admin");
       navigate("/admin");
     } catch (err: any) {
       console.error("Login error:", err);
@@ -89,7 +95,8 @@ export default function Login() {
             variant="contained"
             color="primary"
             sx={{ mt: 3 }}
-            disabled={loading}>
+            disabled={loading}
+          >
             {loading ? <CircularProgress size={24} /> : "Login"}
           </Button>
         </form>
