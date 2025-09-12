@@ -1,0 +1,44 @@
+[
+  {
+    "id": "1",
+    "platform": "Windows",
+    "category": "Startup",
+    "title": "Managing Startup Programs",
+    "description": "Step-by-step guide on managing which apps launch at startup.",
+    "imageUrl1": "",
+    "imageUrl2": "",
+    "dateCreated": "2021-06-25T00:00:00Z",
+    "segment": "IT Support",
+    "solution": "Use Task Manager > Startup tab to disable unnecessary programs.",
+    "userId": "nbk1234",
+    "tags": ["drive"]
+  },
+  {
+    "id": "2",
+    "platform": "Chrome",
+    "category": "Browser",
+    "title": "Installing Browser Extensions",
+    "description": "Instructions for safely installing browser extensions. It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).",
+    "imageUrl1": "",
+    "imageUrl2": "",
+    "dateCreated": "2023-06-12T00:00:00Z",
+    "segment": "Software Help",
+    "solution": "Visit Chrome Web Store, search for the extension, and click 'Add to Chrome'.",
+    "userId": "John Smith",
+    "tags": ["filters", "windows", "browser"]
+  },
+  {
+    "id": "3",
+    "platform": "Mac",
+    "category": "Performance",
+    "title": "Optimizing Device Performance",
+    "description": "Guide on improving system performance.",
+    "imageUrl1": "",
+    "imageUrl2": "",
+    "dateCreated": "2023-04-15T00:00:00Z",
+    "segment": "Device Maintenance",
+    "solution": "Remove unused apps, manage storage, and restart regularly.",
+    "userId": "user_003",
+    "tags": ["files"]
+  }
+]
